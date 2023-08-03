@@ -55,6 +55,7 @@ public class IrisVideoSettings {
 			}
 
 			return tooltip;
+
 		},
 		(arg, d) -> {
 			WorldRenderingPipeline pipeline = Iris.getPipelineManager().getPipelineNullable();

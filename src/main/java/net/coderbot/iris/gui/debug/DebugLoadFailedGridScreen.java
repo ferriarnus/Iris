@@ -60,7 +60,7 @@ public class DebugLoadFailedGridScreen extends Screen {
 	@Override
 	public void render(GuiGraphics guiGraphics, int i, int j, float f) {
 		if (this.minecraft.level == null) {
-			this.renderBackground(guiGraphics);
+			this.renderBackground(guiGraphics, i, j, f);
 		} else {
 			guiGraphics.fillGradient(0, 0, width, height, 0x4F232323, 0x4F232323);
 		}

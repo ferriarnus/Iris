@@ -108,7 +108,7 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
 		if (this.minecraft.level == null) {
-			this.renderBackground(guiGraphics);
+			this.renderBackground(guiGraphics, mouseX, mouseY, delta);
 		} else if (!this.guiHidden) {
 			guiGraphics.fillGradient(0, 0, width, height, 0x4F232323, 0x4F232323);
 		}
@@ -284,7 +284,8 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 				x = (int) (endOfLastButton + (freeSpace / 2.0f)) - 10;
 			}
 
-			ImageButton showHideButton = new ImageButton(
+			// TODO 23w31a fix
+			/*ImageButton showHideButton = new ImageButton(
 				x, this.height - 39,
 				20, 20,
 				this.guiHidden ? 20 : 0, 146, 20,
@@ -300,7 +301,7 @@ public class ShaderPackScreen extends Screen implements HudHideable {
 			showHideButton.setTooltip(Tooltip.create(showOrHide));
 			showHideButton.setTooltipDelay(10);
 
-			this.addRenderableWidget(showHideButton);
+			this.addRenderableWidget(showHideButton);*/
 		}
 
 		// NB: Don't let comment remain when exiting options screen

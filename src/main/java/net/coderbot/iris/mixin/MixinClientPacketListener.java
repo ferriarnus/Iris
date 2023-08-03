@@ -4,7 +4,10 @@ import net.coderbot.iris.Iris;
 import net.coderbot.iris.gl.shader.ShaderCompileException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.CommonListenerCookie;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
@@ -15,9 +18,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPacketListener.class)
-public class MixinClientPacketListener {
-	@Shadow
-	private Minecraft minecraft;
+public abstract class MixinClientPacketListener extends ClientCommonPacketListenerImpl {
+	protected MixinClientPacketListener(Minecraft pClientCommonPacketListenerImpl0, Connection pConnection1, CommonListenerCookie pCommonListenerCookie2) {
+		super(pClientCommonPacketListenerImpl0, pConnection1, pCommonListenerCookie2);
+	}
 
 	@Inject(method = "handleLogin", at = @At("TAIL"))
 	private void iris$showUpdateMessage(ClientboundLoginPacket a, CallbackInfo ci) {
