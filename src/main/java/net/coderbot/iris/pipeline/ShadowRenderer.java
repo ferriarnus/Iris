@@ -3,6 +3,7 @@ package net.coderbot.iris.pipeline;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.coderbot.batchedentityrendering.impl.BatchingDebugMessageHelper;
 import net.coderbot.batchedentityrendering.impl.DrawCallTrackingRenderBuffers;
@@ -26,7 +27,6 @@ import net.coderbot.iris.shadows.CullingDataCache;
 import net.coderbot.iris.shadows.Matrix4fAccess;
 import net.coderbot.iris.shadows.ShadowCompositeRenderer;
 import net.coderbot.iris.shadows.ShadowRenderTargets;
-import net.coderbot.iris.shadows.ShadowRenderingState;
 import net.coderbot.iris.shadows.frustum.BoxCuller;
 import net.coderbot.iris.shadows.frustum.CullEverythingFrustum;
 import net.coderbot.iris.shadows.frustum.FrustumHolder;
@@ -38,6 +38,9 @@ import net.coderbot.iris.uniforms.custom.CustomUniforms;
 import net.coderbot.iris.uniforms.CameraUniforms;
 import net.coderbot.iris.uniforms.CapturedRenderingState;
 import net.coderbot.iris.uniforms.CelestialUniforms;
+import net.coderbot.iris.vendored.joml.Vector3d;
+import net.coderbot.iris.vendored.joml.Vector3i;
+import net.coderbot.iris.vendored.joml.Vector4f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -50,10 +53,6 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.joml.Matrix4f;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.opengl.ARBTextureSwizzle;
 import org.lwjgl.opengl.GL20C;
 import org.lwjgl.opengl.GL30C;
@@ -67,7 +66,6 @@ import java.util.Objects;
 public class ShadowRenderer {
 	public static boolean ACTIVE = false;
 	public static List<BlockEntity> visibleBlockEntities;
-	public static int renderDistance;
 
 	private final float halfPlaneLength;
 	private final float voxelDistance;
@@ -315,7 +313,7 @@ public class ShadowRenderer {
 				setter = "(set by user)";
 			}
 
-			if (distance >= Minecraft.getInstance().options.getEffectiveRenderDistance() * 16 && !isReversed) {
+			if (distance >= Minecraft.getInstance().options.renderDistance * 16 && !isReversed) {
 				distanceInfo = "render distance = " + Minecraft.getInstance().options.getEffectiveRenderDistance() * 16
 					+ " blocks ";
 				distanceInfo += Minecraft.getInstance().isLocalServer() ? "(capped by normal render distance)" : "(capped by normal/server render distance)";
@@ -335,17 +333,17 @@ public class ShadowRenderer {
 
 			Vector4f shadowLightPosition = new CelestialUniforms(sunPathRotation).getShadowLightPositionInWorldSpace();
 
-			Vector3f shadowLightVectorFromOrigin =
-				new Vector3f(shadowLightPosition.x(), shadowLightPosition.y(), shadowLightPosition.z());
+			net.coderbot.iris.vendored.joml.Vector3f shadowLightVectorFromOrigin =
+				new net.coderbot.iris.vendored.joml.Vector3f(shadowLightPosition.x(), shadowLightPosition.y(), shadowLightPosition.z());
 
 			shadowLightVectorFromOrigin.normalize();
 
 			if (isReversed) {
-				return holder.setInfo(new ReversedAdvancedShadowCullingFrustum(CapturedRenderingState.INSTANCE.getGbufferModelView(),
-					CapturedRenderingState.INSTANCE.getGbufferProjection(), shadowLightVectorFromOrigin, boxCuller, new BoxCuller(halfPlaneLength * renderMultiplier)), distanceInfo, cullingInfo);
+				return holder.setInfo(new ReversedAdvancedShadowCullingFrustum(((Matrix4fAccess) (Object) CapturedRenderingState.INSTANCE.getGbufferModelView()).convertToJOML(),
+					((Matrix4fAccess) (Object) CapturedRenderingState.INSTANCE.getGbufferProjection()).convertToJOML(), shadowLightVectorFromOrigin, boxCuller), distanceInfo, cullingInfo);
 			} else {
-				return holder.setInfo(new AdvancedShadowCullingFrustum(CapturedRenderingState.INSTANCE.getGbufferModelView(),
-					CapturedRenderingState.INSTANCE.getGbufferProjection(), shadowLightVectorFromOrigin, boxCuller), distanceInfo, cullingInfo);
+				return holder.setInfo(new AdvancedShadowCullingFrustum(((Matrix4fAccess) (Object) CapturedRenderingState.INSTANCE.getGbufferModelView()).convertToJOML(),
+					((Matrix4fAccess) (Object) CapturedRenderingState.INSTANCE.getGbufferProjection()).convertToJOML(), shadowLightVectorFromOrigin, boxCuller), distanceInfo, cullingInfo);
 			}
 		}
 
@@ -366,15 +364,6 @@ public class ShadowRenderer {
 
 		levelRenderer.getLevel().getProfiler().popPush("shadows");
 		ACTIVE = true;
-
-		renderDistance = (int) ((halfPlaneLength * renderDistanceMultiplier) / 16);
-
-		if (renderDistanceMultiplier < 0) {
-			renderDistance = IrisVideoSettings.shadowDistance;
-		}
-
-
-
 		visibleBlockEntities = new ArrayList<>();
 
 		// NB: We store the previous player buffers in order to be able to allow mods rendering entities in the shadow pass (Flywheel) to use the shadow buffers instead.
@@ -385,7 +374,7 @@ public class ShadowRenderer {
 
 		// Create our camera
 		PoseStack modelView = createShadowModelView(this.sunPathRotation, this.intervalSize);
-		MODELVIEW = new Matrix4f(modelView.last().pose());
+		MODELVIEW = modelView.last().pose().copy();
 
 		levelRenderer.getLevel().getProfiler().push("terrain_setup");
 
@@ -439,13 +428,16 @@ public class ShadowRenderer {
 		setupShadowViewport();
 
 		// Set up our orthographic projection matrix and load it into RenderSystem
-		Matrix4f shadowProjection;
+		float[] projMatrix;
 		if (this.fov != null) {
 			// If FOV is not null, the pack wants a perspective based projection matrix. (This is to support legacy packs)
-			shadowProjection = ShadowMatrices.createPerspectiveMatrix(this.fov);
+			projMatrix = ShadowMatrices.createPerspectiveMatrix(this.fov);
 		} else {
-			shadowProjection = ShadowMatrices.createOrthoMatrix(halfPlaneLength);
+			projMatrix = ShadowMatrices.createOrthoMatrix(halfPlaneLength);
 		}
+
+		Matrix4f shadowProjection = new Matrix4f();
+		((Matrix4fAccess) (Object) shadowProjection).copyFromArray(projMatrix);
 
 		IrisRenderSystem.setShadowProjection(shadowProjection);
 
@@ -512,7 +504,7 @@ public class ShadowRenderer {
 		levelRenderer.getLevel().getProfiler().popPush("build blockentities");
 
 		if (shouldRenderBlockEntities) {
-			renderedShadowBlockEntities = ShadowRenderingState.renderBlockEntities(this, bufferSource, modelView, playerCamera, cameraX, cameraY, cameraZ, tickDelta, hasEntityFrustum);
+			renderedShadowBlockEntities = renderBlockEntities(bufferSource, modelView, cameraX, cameraY, cameraZ, tickDelta, hasEntityFrustum);
 		}
 
 		levelRenderer.getLevel().getProfiler().popPush("draw entities");
@@ -575,7 +567,7 @@ public class ShadowRenderer {
 		levelRenderer.getLevel().getProfiler().popPush("updatechunks");
 	}
 
-	public int renderBlockEntities(MultiBufferSource.BufferSource bufferSource, PoseStack modelView, Camera camera, double cameraX, double cameraY, double cameraZ, float tickDelta, boolean hasEntityFrustum) {
+	private int renderBlockEntities(MultiBufferSource.BufferSource bufferSource, PoseStack modelView, double cameraX, double cameraY, double cameraZ, float tickDelta, boolean hasEntityFrustum) {
 		getLevel().getProfiler().push("build blockentities");
 
 		int shadowBlockEntities = 0;
