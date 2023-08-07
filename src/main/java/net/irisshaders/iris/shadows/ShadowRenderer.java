@@ -61,6 +61,7 @@ public class ShadowRenderer {
 	public static Matrix4f MODELVIEW;
 	public static Matrix4f PROJECTION;
 	public static Frustum FRUSTUM;
+
 	private final float halfPlaneLength;
 	private final float nearPlane, farPlane;
 	private final float voxelDistance;

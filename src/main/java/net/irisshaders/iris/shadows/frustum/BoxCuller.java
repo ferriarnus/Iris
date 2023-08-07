@@ -30,7 +30,7 @@ public class BoxCuller {
 			(float) aabb.maxX, (float) aabb.maxY, (float) aabb.maxZ);
 	}
 
-	public boolean isCulled(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+	public boolean isCulled(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
 		if (maxX < this.minAllowedX || minX > this.maxAllowedX) {
 			return true;
 		}
@@ -52,6 +52,10 @@ public class BoxCuller {
 		}
 
 		return maxZ < -this.maxDistance || minZ > this.maxDistance;
+
+	@Override
+	public String toString() {
+		return "Box Culling active; max distance " + maxDistance;
 	}
 
 	@Override
