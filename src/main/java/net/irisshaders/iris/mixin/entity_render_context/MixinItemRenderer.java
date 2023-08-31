@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = ItemRenderer.class, priority = 1010)
+@Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
 	@Unique
 	private int previousBeValue;
@@ -47,8 +47,8 @@ public abstract class MixinItemRenderer {
 		}
 	}
 
-	@Inject(method = "render", at = @At(value = "RETURN"))
-	private void changeId3(CallbackInfo ci) {
+	@Inject(method = "render", at = @At(value = "TAIL"))
+	private void changeId2(CallbackInfo ci) {
 		CapturedRenderingState.INSTANCE.setCurrentRenderedItem(0);
 		CapturedRenderingState.INSTANCE.setCurrentBlockEntity(previousBeValue);
 		previousBeValue = 0;
