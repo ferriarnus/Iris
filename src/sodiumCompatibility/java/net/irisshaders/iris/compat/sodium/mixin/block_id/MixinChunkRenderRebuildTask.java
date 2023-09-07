@@ -82,9 +82,9 @@ public class MixinChunkRenderRebuildTask { va
 	private void iris$wrapGetBlockLayer(ChunkBuildContext context,
 										CancellationSource cancellationSource, CallbackInfoReturnable<ChunkBuildResult> cir,
 										ChunkRenderData.Builder renderData, VisGraph occluder, ChunkRenderBounds.Builder bounds, ChunkBuildBuffers buffers,
-										ChunkRenderCacheLocal cacheLocal,
+										BlockRenderCache cacheLocal,
 										WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ,
-										BlockPos.MutableBlockPos pos, BlockPos.MutableBlockPos renderOffset,
+										BlockPos.MutableBlockPos pos, BlockPos.MutableBlockPos renderOffset, BlockRenderContext context2,
 										int relY, int relZ, int relX, BlockState blockState) {
 		if (context.buffers instanceof ChunkBuildBuffersExt) {
 			((ChunkBuildBuffersExt) context.buffers).iris$setMaterialId(blockState, ExtendedDataHelper.BLOCK_RENDER_TYPE, (byte) blockState.getLightEmission());
@@ -96,9 +96,9 @@ public class MixinChunkRenderRebuildTask { va
 	private void iris$wrapGetFluidLayer(ChunkBuildContext context,
 										CancellationSource cancellationSource, CallbackInfoReturnable<ChunkBuildResult> cir,
 										ChunkRenderData.Builder renderData, VisGraph occluder, ChunkRenderBounds.Builder bounds, ChunkBuildBuffers buffers,
-										ChunkRenderCacheLocal cacheLocal,
+										BlockRenderCache cacheLocal,
 										WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ,
-										BlockPos.MutableBlockPos pos, BlockPos.MutableBlockPos renderOffset,
+										BlockPos.MutableBlockPos pos, BlockPos.MutableBlockPos renderOffset, BlockRenderContext context2,
 										int relY, int relZ, int relX, BlockState blockState, boolean rendered, FluidState fluidState) {
 		if (context.buffers instanceof ChunkBuildBuffersExt) {
 			((ChunkBuildBuffersExt) context.buffers).iris$setMaterialId(fluidState.createLegacyBlock(), ExtendedDataHelper.FLUID_RENDER_TYPE, (byte) blockState.getLightEmission());
