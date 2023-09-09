@@ -25,10 +25,6 @@ import net.coderbot.iris.shaderpack.option.Profile;
 import net.coderbot.iris.shaderpack.option.values.MutableOptionValues;
 import net.coderbot.iris.shaderpack.option.values.OptionValues;
 import net.coderbot.iris.texture.pbr.PBRTextureManager;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.Version;
 import net.minecraft.ChatFormatting;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.KeyMapping;
@@ -37,9 +33,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -61,6 +58,7 @@ import java.util.stream.Stream;
 import java.util.zip.ZipError;
 import java.util.zip.ZipException;
 
+@Mod(Iris.MODID)
 public class Iris {
 	public static final String MODID = "iris";
 
@@ -94,7 +92,7 @@ public class Iris {
 	// behavior is more concrete and therefore is more likely to repair a user's issues
 	private static boolean resetShaderPackOptions = false;
 
-	private static Version IRIS_VERSION;
+	private static String IRIS_VERSION;
 	private static UpdateChecker updateChecker;
 	private static boolean fallback;
 
@@ -111,16 +109,24 @@ public class Iris {
 	 * <p>This is called right before options are loaded, so we can add key bindings here.</p>
 	 */
 	public void onEarlyInitialize() {
-		ModContainer iris = FabricLoader.getInstance().getModContainer(MODID)
-				.orElseThrow(() -> new IllegalStateException("Couldn't find the mod container for Iris"));
+		if (FMLLoader.getLoadingModList().getModFileById("rubidium") != null) {
+			//sodiumInstalled = true;
+		}
 
-		IRIS_VERSION = iris.getMetadata().getVersion();
+		//hasNEC = FMLLoader.getLoadingModList().getModFileById("notenoughcrashes") != null;
 
-		this.updateChecker = new UpdateChecker(IRIS_VERSION);
+		ModFileInfo iris = FMLLoader.getLoadingModList().getModFileById("iris");
+		if (iris == null) {
+			throw new IllegalStateException("Couldn't find the mod container for Iris");
+		}
 
-		reloadKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "iris.keybinds"));
-		toggleShadersKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.toggleShaders", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "iris.keybinds"));
-		shaderpackScreenKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.shaderPackSelection", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, "iris.keybinds"));
+		IRIS_VERSION = iris.versionString();
+
+		//this.updateChecker = new UpdateChecker(IRIS_VERSION);
+
+		//reloadKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "iris.keybinds"));
+		//toggleShadersKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.toggleShaders", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "iris.keybinds"));
+		//shaderpackScreenKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.shaderPackSelection", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, "iris.keybinds"));
 
 		try {
 			if (!Files.exists(getShaderpacksDirectory())) {
@@ -131,7 +137,7 @@ public class Iris {
 			logger.warn("", e);
 		}
 
-		irisConfig = new IrisConfig(FabricLoader.getInstance().getConfigDir().resolve("iris.properties"));
+		irisConfig = new IrisConfig(FMLLoader.getGamePath().resolve("iris.properties"));
 
 		try {
 			irisConfig.initialize();
@@ -140,7 +146,7 @@ public class Iris {
 			logger.error("", e);
 		}
 
-		this.updateChecker.checkForUpdates(irisConfig);
+		//this.updateChecker.checkForUpdates(irisConfig);
 
 		setupCommands(Minecraft.getInstance());
 
@@ -706,11 +712,11 @@ public class Iris {
 	}
 
 	public static String getVersion() {
-		if (IRIS_VERSION == null) {
+		if (IRIS_VERSION.isEmpty()) {
 			return "Version info unknown!";
 		}
 
-		return IRIS_VERSION.getFriendlyString();
+		return IRIS_VERSION;
 	}
 
 	public static String getFormattedVersion() {
@@ -746,7 +752,7 @@ public class Iris {
 
 	public static Path getShaderpacksDirectory() {
 		if (shaderpacksDirectory == null) {
-			shaderpacksDirectory = FabricLoader.getInstance().getGameDir().resolve("shaderpacks");
+			shaderpacksDirectory = FMLLoader.getGamePath().resolve("shaderpacks");
 		}
 
 		return shaderpacksDirectory;

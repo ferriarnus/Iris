@@ -7,6 +7,7 @@ import net.coderbot.iris.fantastic.IrisParticleRenderTypes;
 import net.coderbot.iris.fantastic.ParticleRenderingPhase;
 import net.coderbot.iris.fantastic.PhasedParticleEngine;
 import net.coderbot.iris.pipeline.ShaderAccess;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -18,7 +19,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -48,12 +53,9 @@ import java.util.function.Supplier;
  */
 @Mixin(ParticleEngine.class)
 public class MixinParticleEngine implements PhasedParticleEngine {
+
 	@Unique
 	private ParticleRenderingPhase phase = ParticleRenderingPhase.EVERYTHING;
-
-	@Shadow
-	@Final
-	private static List<ParticleRenderType> RENDER_ORDER;
 
 	private static final List<ParticleRenderType> OPAQUE_PARTICLE_RENDER_TYPES;
 
@@ -66,29 +68,29 @@ public class MixinParticleEngine implements PhasedParticleEngine {
 		);
 	}
 
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V"))
+	@Redirect(method = "Lnet/minecraft/client/particle/ParticleEngine;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/culling/Frustum;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V"))
 	private void iris$changeParticleShader(Supplier<ShaderInstance> pSupplier0) {
 		RenderSystem.setShader(phase == ParticleRenderingPhase.TRANSLUCENT ? ShaderAccess::getParticleTranslucentShader : pSupplier0);
 	}
 
-	@Redirect(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/particle/ParticleEngine;RENDER_ORDER:Ljava/util/List;"))
-	private List<ParticleRenderType> iris$selectParticlesToRender() {
+	@Redirect(method = "Lnet/minecraft/client/particle/ParticleEngine;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;Lnet/minecraft/client/renderer/LightTexture;Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/culling/Frustum;)V", at = @At(value = "INVOKE", target = "Ljava/util/Map;keySet()Ljava/util/Set;"))
+	private Set<ParticleRenderType> iris$selectParticlesToRender(Map instance) {
+		// Create a copy of the list
+		//
+		// We re-copy the list every time in case someone has added new particle texture sheets behind our back.
+		Set<ParticleRenderType> toRender = new HashSet<>(instance.keySet());
 		if (phase == ParticleRenderingPhase.TRANSLUCENT) {
-			// Create a copy of the list
-			//
-			// We re-copy the list every time in case someone has added new particle texture sheets behind our back.
-			List<ParticleRenderType> toRender = new ArrayList<>(RENDER_ORDER);
 
 			// Remove all known opaque particle texture sheets.
-			toRender.removeAll(OPAQUE_PARTICLE_RENDER_TYPES);
+			OPAQUE_PARTICLE_RENDER_TYPES.forEach(toRender::remove);
 
 			return toRender;
 		} else if (phase == ParticleRenderingPhase.OPAQUE) {
 			// Render only opaque particle sheets
-			return OPAQUE_PARTICLE_RENDER_TYPES;
+			return new HashSet<>(OPAQUE_PARTICLE_RENDER_TYPES);
 		} else {
 			// Don't override particle rendering
-			return RENDER_ORDER;
+			return toRender;
 		}
 	}
 
