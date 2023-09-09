@@ -1,8 +1,6 @@
-package net.irisshaders.iris.mixin;
+package net.coderbot.iris.mixin;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.irisshaders.iris.Iris;
+import net.coderbot.iris.Iris;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -13,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
-@Environment(EnvType.CLIENT)
 public class MixinMinecraft_PipelineManagement {
 	/**
 	 * Should run before the Minecraft.level field is updated after disconnecting from a server or leaving a singleplayer world
@@ -34,17 +31,17 @@ public class MixinMinecraft_PipelineManagement {
 
 	/**
 	 * Injects before LevelRenderer receives the new level, or is notified of the level unload.
-	 * <p>
+	 *
 	 * We destroy any pipelines here to guard against potential memory leaks related to pipelines for
 	 * other dimensions never being unloaded.
-	 * <p>
+	 *
 	 * This injection point is needed so that we can reload the Iris shader pipeline before Sodium starts trying
 	 * to reload its world renderer. Otherwise, there will be inconsistent state since Sodium might initialize and
 	 * use the non-extended vertex format (since we do it based on whether the pipeline is available,
 	 * then Iris will switch on its pipeline, then code will assume that the extended vertex format
 	 * is used everywhere.
-	 * <p>
-	 * See: <a href="https://github.com/IrisShaders/Iris/issues/1330">Issue 1330</a>
+	 *
+	 * See: https://github.com/IrisShaders/Iris/issues/1330
 	 */
 	@Inject(method = "updateLevelInEngines", at = @At("HEAD"))
 	private void iris$resetPipeline(@Nullable ClientLevel level, CallbackInfo ci) {

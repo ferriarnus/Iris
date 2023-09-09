@@ -6,18 +6,26 @@ import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.checkerframework.checker.units.qual.K;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.function.BiConsumer;
 
 @Mixin(DirectoryLister.class)
 public class MixinDirectoryLister {
-	@ModifyArgs(method = "run(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/client/renderer/texture/atlas/SpriteSource$Output;)V", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V", remap = false, ordinal = 0))
-	private void iris$modifyForEachAction(Args args, ResourceManager resourceManager, SpriteSource.Output output) {
-		BiConsumer<? super ResourceLocation, ? super Resource> action = args.get(0);
+
+	@Unique
+	private ResourceManager resourceManager;
+
+	@ModifyArg(method = "run(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/client/renderer/texture/atlas/SpriteSource$Output;)V", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V", remap = false, ordinal = 0))
+	private BiConsumer<? super ResourceLocation, ? super Resource> iris$modifyForEachAction(BiConsumer<? super ResourceLocation, ? super Resource> action) {
+		BiConsumer<? super ResourceLocation, ? super Resource> finalAction = action;
 		BiConsumer<? super ResourceLocation, ? super Resource> wrappedAction = (location, resource) -> {
 			String basePath = PBRType.removeSuffix(location.getPath());
 			if (basePath != null) {
@@ -26,8 +34,13 @@ public class MixinDirectoryLister {
 					return;
 				}
 			}
-			action.accept(location, resource);
+			finalAction.accept(location, resource);
 		};
-		args.set(0, wrappedAction);
+		return wrappedAction;
+	}
+
+	@Inject(method = "run", at = @At("HEAD"), remap = false)
+	public void capture(ResourceManager pResourceManager, SpriteSource.Output pOutput, CallbackInfo ci) {
+		this.resourceManager = pResourceManager;
 	}
 }

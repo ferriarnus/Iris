@@ -1,9 +1,7 @@
-package net.irisshaders.iris.pipeline.transform;
-
-import net.fabricmc.loader.api.FabricLoader;
-import net.irisshaders.iris.Iris;
+package net.coderbot.iris.pipeline;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -11,13 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import net.coderbot.iris.Iris;
+import net.coderbot.iris.pipeline.transform.PatchShaderType;
+import net.minecraftforge.fml.loading.FMLLoader;
+
 /**
  * Static class that deals with printing the patched_shader folder.
  */
 public class ShaderPrinter {
-	private static final Path debugOutDir = FabricLoader.getInstance().getGameDir().resolve("patched_shaders");
 	private static boolean outputLocationCleared = false;
 	private static int programCounter = 0;
+	private static final Path debugOutDir = FMLLoader.getGamePath().resolve("patched_shaders");
 
 	public static void resetPrintState() {
 		outputLocationCleared = false;
@@ -114,7 +116,7 @@ public class ShaderPrinter {
 
 				try {
 					for (int i = 0; i < sources.size(); i += 2) {
-						Files.writeString(debugOutDir.resolve(sources.get(i)), sources.get(i + 1));
+						Files.write(debugOutDir.resolve(sources.get(i)), sources.get(i + 1).getBytes(StandardCharsets.UTF_8));
 					}
 				} catch (IOException e) {
 					Iris.logger.warn("Failed to write debug patched shader source", e);

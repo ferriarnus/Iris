@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "net.irisshaders.iris.mixin.bettermipmaps",
   "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.iris.refmap.json",
   "client": [
   ],
   "injectors": {

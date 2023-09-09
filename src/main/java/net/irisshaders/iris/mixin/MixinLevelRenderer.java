@@ -1,36 +1,32 @@
-package net.irisshaders.iris.mixin;
+package net.coderbot.iris.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.irisshaders.iris.Iris;
-import net.irisshaders.iris.compat.dh.DHCompat;
-import net.irisshaders.iris.gl.IrisRenderSystem;
-import net.irisshaders.iris.layer.IsOutlineRenderStateShard;
-import net.irisshaders.iris.layer.OuterWrappedRenderType;
-import net.irisshaders.iris.pathways.HandRenderer;
-import net.irisshaders.iris.pipeline.WorldRenderingPhase;
-import net.irisshaders.iris.pipeline.WorldRenderingPipeline;
-import net.irisshaders.iris.shadows.frustum.fallback.NonCullingFrustum;
-import net.irisshaders.iris.uniforms.CapturedRenderingState;
-import net.irisshaders.iris.uniforms.IrisTimeUniforms;
-import net.irisshaders.iris.uniforms.SystemTimeUniforms;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.TickRateManager;
+import net.neoforged.fml.loading.FMLLoader;
+import org.joml.Matrix4f;
+import net.coderbot.iris.Iris;
+import net.coderbot.iris.layer.IsOutlineRenderStateShard;
+import net.coderbot.iris.layer.OuterWrappedRenderType;
+import net.coderbot.iris.pipeline.HandRenderer;
+import net.coderbot.iris.pipeline.WorldRenderingPhase;
+import net.coderbot.iris.pipeline.WorldRenderingPipeline;
+import net.coderbot.iris.shadows.frustum.fallback.NonCullingFrustum;
+import net.coderbot.iris.uniforms.CapturedRenderingState;
+import net.coderbot.iris.uniforms.IrisTimeUniforms;
+import net.coderbot.iris.uniforms.SystemTimeUniforms;
+import org.joml.Vector3d;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.TickRateManager;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL43C;
 import org.spongepowered.asm.mixin.Final;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -65,20 +61,14 @@ public class MixinLevelRenderer {
 	@Shadow
 	private Frustum cullingFrustum;
 
-	@Shadow
-	private @Nullable ClientLevel level;
-	private boolean warned;
-
 	// Begin shader rendering after buffers have been cleared.
 	// At this point we've ensured that Minecraft's main framebuffer is cleared.
 	// This is important or else very odd issues will happen with shaders that have a final pass that doesn't write to
 	// all pixels.
 	@Inject(method = "renderLevel", at = @At("HEAD"))
 	private void iris$setupPipeline(PoseStack poseStack, float tickDelta, long startTime, boolean renderBlockOutline,
-									Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
-									Matrix4f projection, CallbackInfo callback) {
-		DHCompat.checkFrame();
-
+									   Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
+									   Matrix4f projection, CallbackInfo callback) {
 		IrisTimeUniforms.updateTime();
 		CapturedRenderingState.INSTANCE.setGbufferModelView(poseStack.last().pose());
 		CapturedRenderingState.INSTANCE.setGbufferProjection(projection);
@@ -94,10 +84,6 @@ public class MixinLevelRenderer {
 
 		if (pipeline.shouldDisableFrustumCulling()) {
 			this.cullingFrustum = new NonCullingFrustum();
-		}
-
-		if (Iris.shouldActivateWireframe() && this.minecraft.isLocalServer()) {
-			IrisRenderSystem.setPolygonMode(GL43C.GL_LINE);
 		}
 	}
 
@@ -122,16 +108,6 @@ public class MixinLevelRenderer {
 		Minecraft.getInstance().getProfiler().popPush("iris_final");
 		pipeline.finalizeLevelRendering();
 		pipeline = null;
-
-		if (!warned) {
-			warned = true;
-			Iris.getUpdateChecker().getBetaInfo().ifPresent(info ->
-				Minecraft.getInstance().gui.getChat().addMessage(Component.literal("A new beta is out for Iris " + info.betaTag + ". Please redownload it.").withStyle(ChatFormatting.BOLD, ChatFormatting.RED)));
-		}
-
-		if (Iris.shouldActivateWireframe() && this.minecraft.isLocalServer()) {
-			IrisRenderSystem.setPolygonMode(GL43C.GL_FILL);
-		}
 	}
 
 	// Setup shadow terrain & render shadows before the main terrain setup. We need to do things in this order to
@@ -193,7 +169,7 @@ public class MixinLevelRenderer {
 	}
 
 	@Inject(method = "renderSky", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getTimeOfDay(F)F"),
-		slice = @Slice(from = @At(value = "FIELD", target = "Lcom/mojang/math/Axis;YP:Lcom/mojang/math/Axis;")))
+			slice = @Slice(from = @At(value = "FIELD", target = "Lcom/mojang/math/Axis;YP:Lcom/mojang/math/Axis;")))
 	private void iris$renderSky$tiltSun(PoseStack poseStack, Matrix4f projectionMatrix, float f, Camera camera, boolean bl, Runnable runnable, CallbackInfo ci) {
 		poseStack.mulPose(Axis.ZP.rotationDegrees(pipeline.getSunPathRotation()));
 	}

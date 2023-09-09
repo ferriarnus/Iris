@@ -1,6 +1,6 @@
 package net.irisshaders.iris.compat.sodium.mixin;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -18,7 +18,7 @@ public class IrisSodiumCompatMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public void onLoad(String mixinPackage) {
-		validSodiumVersion = FabricLoader.getInstance().isModLoaded("sodium");
+		validSodiumVersion = FMLLoader.getLoadingModList().getModFileById("rubidium") != null;
 
 		if (!validSodiumVersion) {
 			// We can't use Iris' logger here due to classloading issues.
