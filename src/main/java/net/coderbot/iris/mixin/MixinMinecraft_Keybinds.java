@@ -25,7 +25,7 @@ public class MixinMinecraft_Keybinds {
 	private void iris$onTick(CallbackInfo ci) {
 		this.profiler.push("iris_keybinds");
 
-		Iris.handleKeybinds((Minecraft) (Object) this);
+		//Iris.handleKeybinds((Minecraft) (Object) this);
 
 		this.profiler.pop();
 	}

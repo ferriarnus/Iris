@@ -5,7 +5,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -31,31 +31,56 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public class MixinRenderTarget_StencilBufferTest {
 	private static final boolean STENCIL = true;
 
-	@ModifyArgs (method = "createBuffers",
-		at = @At (value = "INVOKE",
-			target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V",
-			ordinal = 0))
-	public void init(Args args) {
+//	@ModifyArgs (method = "createBuffers",
+//		at = @At (value = "INVOKE",
+//			target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V",
+//			ordinal = 0))
+//	public void init(Args args) {
+//		if (STENCIL) {
+//			// internalformat
+//			// NB: The original Gist sets this to 3, but that is incorrect. Arguments are zero-indexed.
+//			args.set(2, GL30.GL_DEPTH32F_STENCIL8);
+//
+//			// format
+//			args.set(6, GL30.GL_DEPTH_STENCIL);
+//
+//			// type
+//			args.set(7, GL30.GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
+//		}
+//	}
+
+	@ModifyArg(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V", ordinal = 0), index = 2)
+	public int init1(int pTarget) {
 		if (STENCIL) {
-			// internalformat
-			// NB: The original Gist sets this to 3, but that is incorrect. Arguments are zero-indexed.
-			args.set(2, GL30.GL_DEPTH32F_STENCIL8);
-
-			// format
-			args.set(6, GL30.GL_DEPTH_STENCIL);
-
-			// type
-			args.set(7, GL30.GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
+			return GL30.GL_DEPTH32F_STENCIL8;
 		}
+		return pTarget;
 	}
 
-	@ModifyArgs (method = "createBuffers",
+	@ModifyArg(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V", ordinal = 0), index = 6)
+	public int init2(int pTarget) {
+		if (STENCIL) {
+			return GL30.GL_DEPTH_STENCIL;
+		}
+		return pTarget;
+	}
+
+	@ModifyArg(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V", ordinal = 0), index = 7)
+	public int init3(int pTarget) {
+		if (STENCIL) {
+			return GL30.GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
+		}
+		return pTarget;
+	}
+
+	@ModifyArg (method = "createBuffers",
 		at = @At (value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_glFramebufferTexture2D(IIIII)V"),
-		slice = @Slice (from = @At (value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;useDepth:Z", ordinal = 1)))
-	public void init2(Args args) {
+		slice = @Slice (from = @At (value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;useDepth:Z", ordinal = 1)), index = 1)
+	public int init4(int pTarget) {
 		if (STENCIL) {
 			// attachment
-			args.set(1, GL30.GL_DEPTH_STENCIL_ATTACHMENT);
+			return GL30.GL_DEPTH_STENCIL_ATTACHMENT;
 		}
+		return pTarget;
 	}
 }

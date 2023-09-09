@@ -12,6 +12,7 @@ import net.coderbot.iris.pipeline.newshader.ExtendedShader;
 import net.coderbot.iris.pipeline.newshader.ShaderInstanceInterface;
 import net.coderbot.iris.pipeline.newshader.fallback.FallbackShader;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import org.lwjgl.opengl.ARBTextureSwizzle;
 import org.lwjgl.opengl.GL20C;
@@ -46,7 +47,7 @@ public abstract class MixinShaderInstance implements ShaderInstanceInterface {
 		logger.warn(message, arg1, arg2);
 	}
 
-	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/shaders/Uniform;glBindAttribLocation(IILjava/lang/CharSequence;)V"))
+	@Redirect(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/shaders/Uniform;glBindAttribLocation(IILjava/lang/CharSequence;)V"))
 	public void iris$redirectBindAttributeLocation(int i, int j, CharSequence charSequence) {
 		if (((Object) this) instanceof ExtendedShader && ATTRIBUTE_LIST.contains(charSequence)) {
 			Uniform.glBindAttribLocation(i, j, "iris_" + charSequence);
@@ -83,9 +84,10 @@ public abstract class MixinShaderInstance implements ShaderInstanceInterface {
 		}
 	}
 
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/GsonHelper;parse(Ljava/io/Reader;)Lcom/google/gson/JsonObject;"))
-	public void iris$setupGeometryShader(ResourceProvider resourceProvider, String string, VertexFormat vertexFormat, CallbackInfo ci) {
-		this.iris$createGeometryShader(resourceProvider, string);
+	//@Inject(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/GsonHelper;parse(Ljava/io/Reader;)Lcom/google/gson/JsonObject;"))
+	@Inject(method = "<init>(Lnet/minecraft/server/packs/resources/ResourceProvider;Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/vertex/VertexFormat;)V", at = @At("RETURN"))
+	public void iris$setupGeometryShader(ResourceProvider pResourceProvider, ResourceLocation shaderLocation, VertexFormat pVertexFormat, CallbackInfo ci) {
+		this.iris$createGeometryShader(pResourceProvider, shaderLocation.getPath());
 	}
 
 	@Override

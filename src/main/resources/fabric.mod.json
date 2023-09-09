@@ -18,7 +18,7 @@
   },
 
   "license": "LGPL-3.0-only",
-  "icon": "assets/iris/iris-logo.png",
+  "icon": "iris-logo.png",
 
   "environment": "client",
   "entrypoints": {

@@ -4,6 +4,7 @@
   "plugin": "net.coderbot.iris.compat.indigo.mixin.IrisIndigoCompatMixinPlugin",
   "package": "net.coderbot.iris.compat.indigo.mixin",
   "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.iris.refmap.json",
   "client": [
     "MixinAbstractBlockRenderContext"
   ],
