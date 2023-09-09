@@ -25,8 +25,8 @@ public class MixinClientPacketListener {
 			return;
 		}
 
-		Iris.getUpdateChecker().getUpdateMessage().ifPresent(msg ->
-			this.minecraft.player.displayClientMessage(msg, false));
+		//Iris.getUpdateChecker().getUpdateMessage().ifPresent(msg ->
+		//	this.minecraft.player.displayClientMessage(msg, false));
 
 		Iris.getStoredError().ifPresent(e ->
 			this.minecraft.player.displayClientMessage(Component.translatable(e instanceof ShaderCompileException ? "iris.load.failure.shader" : "iris.load.failure.generic").append(Component.literal("Copy Info").withStyle(arg -> arg.withUnderlined(true).withColor(ChatFormatting.BLUE).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, e.getMessage())))), false));

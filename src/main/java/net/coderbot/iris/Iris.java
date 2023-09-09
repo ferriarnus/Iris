@@ -33,8 +33,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +60,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipError;
 import java.util.zip.ZipException;
 
-@Mod(Iris.MODID)
 public class Iris {
 	public static final String MODID = "iris";
 
@@ -82,9 +83,9 @@ public class Iris {
 	private static PipelineManager pipelineManager;
 	private static IrisConfig irisConfig;
 	private static FileSystem zipFileSystem;
-	private static KeyMapping reloadKeybind;
-	private static KeyMapping toggleShadersKeybind;
-	private static KeyMapping shaderpackScreenKeybind;
+	private static final KeyMapping reloadKeybind = new KeyMapping("iris.keybind.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "iris.keybinds");
+	private static final KeyMapping toggleShadersKeybind = new KeyMapping("iris.keybind.toggleShaders", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "iris.keybinds");
+	private static final KeyMapping shaderpackScreenKeybind = new KeyMapping("iris.keybind.shaderPackSelection", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, "iris.keybinds");
 
 	private static final Map<String, String> shaderPackOptionQueue = new HashMap<>();
 	// Flag variable used when reloading
@@ -124,10 +125,6 @@ public class Iris {
 
 		//this.updateChecker = new UpdateChecker(IRIS_VERSION);
 
-		//reloadKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.reload", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "iris.keybinds"));
-		//toggleShadersKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.toggleShaders", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "iris.keybinds"));
-		//shaderpackScreenKeybind = KeyBindingHelper.registerKeyBinding(new KeyMapping("iris.keybind.shaderPackSelection", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, "iris.keybinds"));
-
 		try {
 			if (!Files.exists(getShaderpacksDirectory())) {
 				Files.createDirectories(getShaderpacksDirectory());
@@ -151,6 +148,12 @@ public class Iris {
 		setupCommands(Minecraft.getInstance());
 
 		initialized = true;
+	}
+
+	public static void keyEvent(RegisterKeyMappingsEvent event) {
+		event.register(reloadKeybind);
+		event.register(toggleShadersKeybind);
+		event.register(shaderpackScreenKeybind);
 	}
 
 	private void setupCommands(Minecraft instance) {
