@@ -173,9 +173,8 @@ dependencies {
 
     compileOnly "maven.modrinth:embeddium:0.1.4+mc1.20.1"
 
-    implementation "io.github.douira:glsl-transformer:2.0.0-pre13"
     implementation "org.anarres:jcpp:1.4.14"
-
+    implementation "io.github.douira:glsl-transformer:2.0.0-pre13"
     implementation "it.unimi.dsi:fastutil:8.5.8"
 
     testImplementation "junit:junit:4.13.1"
