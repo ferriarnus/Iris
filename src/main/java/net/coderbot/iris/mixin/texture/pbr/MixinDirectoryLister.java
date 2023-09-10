@@ -39,8 +39,8 @@ public class MixinDirectoryLister {
 		return wrappedAction;
 	}
 
-	@Inject(method = "run", at = @At("HEAD"), remap = false)
-	public void capture(ResourceManager pResourceManager, SpriteSource.Output pOutput, CallbackInfo ci) {
+	@Inject(method = "run", at = @At("HEAD"))
+	public void iris$capture(ResourceManager pResourceManager, SpriteSource.Output pOutput, CallbackInfo ci) {
 		this.resourceManager = pResourceManager;
 	}
 }

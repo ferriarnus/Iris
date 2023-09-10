@@ -139,6 +139,10 @@ repositories {
     // Put repositories for dependencies here
     // NeoGradle automatically adds the Forge maven and Maven Central for you
 
+    maven {
+        url = "https://maven.fabricmc.net/"
+    }
+
     exclusiveContent {
         forRepository {
             maven {
@@ -193,7 +197,8 @@ dependencies {
     // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    //annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    annotationProcessor 'net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5'
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
