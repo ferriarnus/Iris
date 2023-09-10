@@ -1,10 +1,10 @@
-package net.irisshaders.iris.compat.sodium.mixin.shadow_map.frustum;
+package net.coderbot.iris.compat.sodium.mixin.shadow_map.frustum;
 
 import me.jellysquid.mods.sodium.client.render.viewport.Viewport;
 import me.jellysquid.mods.sodium.client.render.viewport.ViewportProvider;
 import me.jellysquid.mods.sodium.client.render.viewport.frustum.Frustum;
-import net.irisshaders.iris.shadows.frustum.BoxCuller;
-import net.irisshaders.iris.shadows.frustum.fallback.BoxCullingFrustum;
+import net.coderbot.iris.shadows.frustum.BoxCuller;
+import net.coderbot.iris.shadows.frustum.fallback.BoxCullingFrustum;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,17 +13,19 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(BoxCullingFrustum.class)
 public class MixinBoxCullingFrustum implements Frustum, ViewportProvider {
-	@Unique
-	private final Vector3d position = new Vector3d();
 	@Shadow(remap = false)
 	@Final
 	private BoxCuller boxCuller;
-	@Shadow
+
+	@Shadow(remap = false)
 	private double x, y, z;
+
+	@Unique
+	private Vector3d position = new Vector3d();
 
 	@Override
 	public Viewport sodium$createViewport() {
-		return new Viewport(this, position.set(x, y, z));
+		return new Viewport(this, position.set(x,  y,  z));
 	}
 
 	@Override
