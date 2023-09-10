@@ -28,7 +28,7 @@ public class MixinEntityRenderDispatcher {
 	 * @author IMS
 	 * @reason Overwrite shadow rendering with our own
 	 */
-	@Overwrite
+	@Overwrite(remap = false)
 	private static void renderShadowPart(PoseStack.Pose matrices, VertexConsumer vertices, float radius, float alpha, float minX, float maxX, float minY, float minZ, float maxZ) {
 		float size = 0.5F * (1.0F / radius);
 
