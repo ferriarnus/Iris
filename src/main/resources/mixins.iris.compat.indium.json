@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "plugin": "net.coderbot.iris.compat.indium.mixin.IrisIndiumCompatMixinPlugin",
   "package": "net.coderbot.iris.compat.indium.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "mixins.iris.refmap.json",
   "client": [
     "MixinAbstractBlockRenderContext"
