@@ -17,16 +17,16 @@ public abstract class MixinAdvancedShadowCullingFrustum implements ViewportProvi
 	@Shadow(remap = false)
 	protected abstract int checkCornerVisibility(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-	@Shadow
+	@Shadow(remap = false)
 	public double x;
 
-	@Shadow
+	@Shadow(remap = false)
 	public double y;
 
-	@Shadow
+	@Shadow(remap = false)
 	public double z;
 
-	@Shadow
+	@Shadow(remap = false)
 	@Final
 	protected BoxCuller boxCuller;
 

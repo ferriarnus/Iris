@@ -38,16 +38,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(CloudRenderer.class)
 public abstract class MixinCloudRenderer {
-	@Shadow
+	@Shadow(remap = false)
 	protected abstract void rebuildGeometry(BufferBuilder bufferBuilder, int cloudDistance, int centerCellX, int centerCellZ);
 
 	@Shadow
 	private ShaderInstance shader;
 
-	@Shadow
+	@Shadow(remap = false)
+	private ShaderInstance clouds;
+
+	@Shadow(remap = false)
 	protected abstract void applyFogModifiers(ClientLevel world, FogRenderer.FogData fogData, LocalPlayer player, int cloudDistance, float tickDelta);
 
-	@Shadow
+	@Shadow(remap = false)
 	@Final
 	private FogRenderer.FogData fogData;
 	@Unique

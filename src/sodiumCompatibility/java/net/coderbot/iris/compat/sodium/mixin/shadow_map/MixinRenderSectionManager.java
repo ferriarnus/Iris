@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderSectionManager.class)
 public class MixinRenderSectionManager {
-    @Shadow private @NotNull SortedRenderLists renderLists;
+    @Shadow(remap = false)
+	private @NotNull SortedRenderLists renderLists;
     @Unique
     private @NotNull SortedRenderLists shadowRenderLists = SortedRenderLists.empty();
 
