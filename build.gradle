@@ -5,6 +5,7 @@ plugins {
     id 'net.neoforged.gradle' version '[6.0.18,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 mixin {
@@ -19,6 +20,7 @@ mixin {
     config "mixins.iris.integrationtest.json"
     config "mixins.iris.json"
     config "mixins.iris.vertexformat.json"
+
     add sourceSets.main, 'mixins.iris.refmap.json'
 }
 
@@ -152,9 +154,13 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    // flatDir {
-    //     dir 'libs'
-    // }
+    flatDir {
+         dir 'libs'
+    }
+}
+
+configurations {
+    shade
 }
 
 dependencies {
@@ -171,24 +177,41 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-    compileOnly "maven.modrinth:embeddium:0.1.4+mc1.20.1"
+    implementation(fg.deobf("maven.modrinth:embeddium:0.1.4+mc1.20.1"))
+    //implementation "maven.modrinth:rubidium:0.7.0a"
 
-    implementation "org.anarres:jcpp:1.4.14"
-    implementation "io.github.douira:glsl-transformer:2.0.0-pre13"
-    implementation "it.unimi.dsi:fastutil:8.5.8"
+    minecraftLibrary("org.anarres:jcpp:1.4.14") {transitive = false}
+    shade("org.anarres:jcpp:1.4.14") {transitive = false}
+    minecraftLibrary ("io.github.douira:glsl-transformer:2.0.0-shadow") {transitive = false}
+    shade ("io.github.douira:glsl-transformer:2.0.0-shadow") {transitive = false}
+    minecraftLibrary("it.unimi.dsi:fastutil:8.5.8") {transitive = false}
 
-    testImplementation "junit:junit:4.13.1"
-    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    minecraftLibrary("org.junit.jupiter:junit-jupiter:5.8.1")
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
+
+shadowJar {
+    getArchiveClassifier().set('')
+    configurations = [project.configurations.shade]
+}
+
+reobf {
+    shadowJar { }
+}
+
+tasks.assemble.dependsOn('shadowJar')
+tasks.shadowJar.dependsOn('reobfJar')
+tasks.build.dependsOn reobfShadowJar
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
@@ -224,7 +247,8 @@ tasks.named('jar', Jar).configure {
     }
 
     // This is the preferred method to reobfuscate your jar file
-    finalizedBy 'reobfJar'
+    //finalizedBy 'reobfJar'
+    finalizedBy 'reobfShadowJar'
 }
 
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing:
