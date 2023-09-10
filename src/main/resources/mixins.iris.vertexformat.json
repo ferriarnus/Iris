@@ -1,13 +1,13 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.irisshaders.iris.mixin.vertices",
-  "compatibilityLevel": "JAVA_8",
+  "package": "net.coderbot.iris.mixin.vertices",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "mixins.iris.refmap.json",
   "client": [
     "MixinBufferBuilder",
-    "MixinVertexFormat",
     "MixinVertexFormatElement",
+    "MixinVertexFormat",
     "block_rendering.MixinBufferBuilder_SeparateAo",
     "block_rendering.MixinChunkRebuildTask",
     "block_rendering.MixinClientLevel",
