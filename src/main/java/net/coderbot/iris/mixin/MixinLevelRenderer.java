@@ -3,7 +3,7 @@ package net.coderbot.iris.mixin;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLLoader;
 import org.joml.Matrix4f;
 import net.coderbot.iris.Iris;
 import net.coderbot.iris.fantastic.WrappingMultiBufferSource;

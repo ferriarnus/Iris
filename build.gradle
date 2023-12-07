@@ -18,7 +18,6 @@ base {
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
-//minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
 
 // Default run configurations.
 // These can be tweaked, removed, or duplicated as needed.
@@ -110,7 +109,7 @@ dependencies {
     // The "userdev" classifier will be requested and setup by NeoGradle.
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
-    implementation "net.neoforged:forge:${neo_version}"
+    implementation "net.neoforged:neoforge:${neo_version}"
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

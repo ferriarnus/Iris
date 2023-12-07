@@ -68,35 +68,38 @@ side="BOTH"
 #[features.${mod_id}]
 #openGLVersion="[3.2,)"
 
-[[mixin]]
+[[accessTransformers]]
+file = "accesstransformer.cfg"
+
+[[mixins]]
 config = "iris-batched-entity-rendering.mixins.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.bettermipmaps.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.compat.indium.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.compat.indigo.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.compat.sodium.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.devenvironment.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.fantastic.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.fixes.maxfpscrash.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.integrationtest.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.json"
 
-[[mixin]]
+[[mixins]]
 config = "mixins.iris.vertexformat.json"
