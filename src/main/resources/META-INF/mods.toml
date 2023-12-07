@@ -67,3 +67,36 @@ side="BOTH"
 # stop your mod loading on the server for example.
 #[features.${mod_id}]
 #openGLVersion="[3.2,)"
+
+[[mixin]]
+config = "iris-batched-entity-rendering.mixins.json"
+
+[[mixin]]
+config = "mixins.iris.bettermipmaps.json"
+
+[[mixin]]
+config = "mixins.iris.compat.indium.json"
+
+[[mixin]]
+config = "mixins.iris.compat.indigo.json"
+
+[[mixin]]
+config = "mixins.iris.compat.sodium.json"
+
+[[mixin]]
+config = "mixins.iris.devenvironment.json"
+
+[[mixin]]
+config = "mixins.iris.fantastic.json"
+
+[[mixin]]
+config = "mixins.iris.fixes.maxfpscrash.json"
+
+[[mixin]]
+config = "mixins.iris.integrationtest.json"
+
+[[mixin]]
+config = "mixins.iris.json"
+
+[[mixin]]
+config = "mixins.iris.vertexformat.json"
