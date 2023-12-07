@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 import net.coderbot.iris.Iris;
 import net.coderbot.iris.pipeline.transform.PatchShaderType;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLLoader;
 
 /**
  * Static class that deals with printing the patched_shader folder.

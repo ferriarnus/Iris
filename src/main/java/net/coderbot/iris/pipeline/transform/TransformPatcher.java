@@ -7,8 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.coderbot.iris.gl.shader.ShaderCompileException;
-import shadow.antlr.v4.runtime.Token;
-import shadow.antlr.v4.runtime.misc.ParseCancellationException;
+import org.antlr.v4.runtime.Token;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
