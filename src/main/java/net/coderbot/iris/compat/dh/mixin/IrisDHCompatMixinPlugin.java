@@ -1,4 +1,4 @@
-package net.irisshaders.iris.compat.sodium.mixin;
+package net.coderbot.iris.compat.dh.mixin;
 
 import net.neoforged.fml.loading.FMLLoader;
 import org.objectweb.asm.tree.ClassNode;
@@ -9,21 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Semi-critical mixin config plugin, disables mixins if Sodium isn't present,
- * since on 1.18+ we have mixins into Iris classes that crash the game instead of just
- * spamming the log if Sodium isn't present.
+ * Non-critical mixin config plugin, just disables mixins if Distant Horizons isn't present,
+ * since otherwise the log gets spammed with warnings.
  */
-public class IrisSodiumCompatMixinPlugin implements IMixinConfigPlugin {
-	private boolean validSodiumVersion = false;
-
+public class IrisDHCompatMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public void onLoad(String mixinPackage) {
-		validSodiumVersion = FMLLoader.getLoadingModList().getModFileById("rubidium") != null;
-
-		if (!validSodiumVersion) {
-			// We can't use Iris' logger here due to classloading issues.
-			System.err.println("[Iris] Invalid/missing version of Sodium detected, disabling compatibility mixins!");
-		}
 
 	}
 
@@ -34,7 +25,7 @@ public class IrisSodiumCompatMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-		return validSodiumVersion;
+		return FMLLoader.getLoadingModList().getModFileById("distanthorizons") != null;
 	}
 
 	@Override
