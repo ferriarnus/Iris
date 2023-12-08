@@ -45,9 +45,6 @@ public abstract class MixinCloudRenderer {
 	private ShaderInstance shader;
 
 	@Shadow(remap = false)
-	private ShaderInstance clouds;
-
-	@Shadow(remap = false)
 	protected abstract void applyFogModifiers(ClientLevel world, FogRenderer.FogData fogData, LocalPlayer player, int cloudDistance, float tickDelta);
 
 	@Shadow(remap = false)

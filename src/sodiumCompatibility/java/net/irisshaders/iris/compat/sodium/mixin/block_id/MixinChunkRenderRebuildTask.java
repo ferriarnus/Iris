@@ -48,7 +48,7 @@ public class MixinChunkRenderRebuildTask {
 								  CancellationToken cancellationSource, CallbackInfoReturnable<ChunkBuildOutput> cir,
 								  BuiltSectionInfo.Builder renderData, VisGraph occluder, ChunkBuildBuffers buffers,
 								  BlockRenderCache cacheLocal,
-								  WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ, Map map,
+								  WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ,
 								  BlockPos.MutableBlockPos pos, BlockPos.MutableBlockPos renderOffset, BlockRenderContext context2,
 								  int relY, int relZ, int relX, BlockState blockState) {
 		if (BlockRenderingSettings.INSTANCE.shouldVoxelizeLightBlocks() && blockState.getBlock() instanceof LightBlock) {
@@ -81,7 +81,7 @@ public class MixinChunkRenderRebuildTask {
 										CancellationToken cancellationSource, CallbackInfoReturnable<ChunkBuildOutput> cir,
 										BuiltSectionInfo.Builder renderData, VisGraph occluder, ChunkBuildBuffers buffers,
 										BlockRenderCache cacheLocal,
-										WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ, Map map,
+										WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ,
 										BlockPos.MutableBlockPos pos, BlockPos.MutableBlockPos renderOffset, BlockRenderContext context2,
 										int relY, int relZ, int relX, BlockState blockState) {
 		if (context.buffers instanceof ChunkBuildBuffersExt) {
@@ -95,7 +95,7 @@ public class MixinChunkRenderRebuildTask {
 										CancellationToken cancellationSource, CallbackInfoReturnable<ChunkBuildOutput> cir,
 										BuiltSectionInfo.Builder renderData, VisGraph occluder, ChunkBuildBuffers buffers,
 										BlockRenderCache cacheLocal,
-										WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ, Map map,
+										WorldSlice slice, int baseX, int baseY, int baseZ, int maxX, int maxY, int maxZ,
 										BlockPos.MutableBlockPos pos, BlockPos.MutableBlockPos renderOffset, BlockRenderContext context2,
 										int relY, int relZ, int relX, BlockState blockState, FluidState fluidState) {
 		if (context.buffers instanceof ChunkBuildBuffersExt) {
