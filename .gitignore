@@ -37,6 +37,7 @@ bin/
 # fabric
 
 run/
+runs/
 /logs/latest.log
 
 # macOS
