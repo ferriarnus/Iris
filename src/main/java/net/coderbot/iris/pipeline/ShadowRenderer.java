@@ -26,6 +26,7 @@ import net.coderbot.iris.shadows.CullingDataCache;
 import net.coderbot.iris.shadows.Matrix4fAccess;
 import net.coderbot.iris.shadows.ShadowCompositeRenderer;
 import net.coderbot.iris.shadows.ShadowRenderTargets;
+import net.coderbot.iris.shadows.ShadowRenderingState;
 import net.coderbot.iris.shadows.frustum.BoxCuller;
 import net.coderbot.iris.shadows.frustum.CullEverythingFrustum;
 import net.coderbot.iris.shadows.frustum.FrustumHolder;
@@ -342,8 +343,8 @@ public class ShadowRenderer {
 				return holder.setInfo(new ReversedAdvancedShadowCullingFrustum(CapturedRenderingState.INSTANCE.getGbufferModelView(),
 					CapturedRenderingState.INSTANCE.getGbufferProjection(), shadowLightVectorFromOrigin, boxCuller, new BoxCuller(halfPlaneLength * renderMultiplier)), distanceInfo, cullingInfo);
 			} else {
-				return holder.setInfo(new AdvancedShadowCullingFrustum(((Matrix4fAccess) (Object) CapturedRenderingState.INSTANCE.getGbufferModelView()).convertToJOML(),
-					((Matrix4fAccess) (Object) CapturedRenderingState.INSTANCE.getGbufferProjection()).convertToJOML(), shadowLightVectorFromOrigin, boxCuller), distanceInfo, cullingInfo);
+				return holder.setInfo(new AdvancedShadowCullingFrustum(CapturedRenderingState.INSTANCE.getGbufferModelView(),
+					CapturedRenderingState.INSTANCE.getGbufferProjection(), shadowLightVectorFromOrigin, boxCuller), distanceInfo, cullingInfo);
 			}
 		}
 
@@ -370,6 +371,7 @@ public class ShadowRenderer {
 		if (renderDistanceMultiplier < 0) {
 			renderDistance = IrisVideoSettings.shadowDistance;
 		}
+
 
 
 		visibleBlockEntities = new ArrayList<>();
@@ -501,15 +503,14 @@ public class ShadowRenderer {
 		EntityRenderDispatcher dispatcher = levelRenderer.getEntityRenderDispatcher();
 
 		if (shouldRenderEntities) {
-			renderedShadowBlockEntities = renderBlockEntities(bufferSource, modelView, cameraX, cameraY, cameraZ, tickDelta, hasEntityFrustum);		} else if (shouldRenderPlayer) {
+			renderedShadowEntities = renderEntities(levelRenderer, dispatcher, bufferSource, modelView, tickDelta, entityShadowFrustum, cameraX, cameraY, cameraZ);} else if (shouldRenderPlayer) {
 			renderedShadowEntities = renderPlayerEntity(levelRenderer, dispatcher, bufferSource, modelView, tickDelta, entityShadowFrustum, cameraX, cameraY, cameraZ);
 		}
 
 		levelRenderer.getLevel().getProfiler().popPush("build blockentities");
 
 		if (shouldRenderBlockEntities) {
-			renderedShadowBlockEntities = renderBlockEntities(bufferSource, modelView, cameraX, cameraY, cameraZ, tickDelta, hasEntityFrustum);
-		}
+			renderedShadowBlockEntities = ShadowRenderingState.renderBlockEntities(this, bufferSource, modelView, playerCamera, cameraX, cameraY, cameraZ, tickDelta, hasEntityFrustum);		}
 
 		levelRenderer.getLevel().getProfiler().popPush("draw entities");
 
@@ -571,7 +572,7 @@ public class ShadowRenderer {
 		levelRenderer.getLevel().getProfiler().popPush("updatechunks");
 	}
 
-	public int renderBlockEntities(MultiBufferSource.BufferSource bufferSource, PoseStack modelView, double cameraX, double cameraY, double cameraZ, float tickDelta, boolean hasEntityFrustum) {
+	public int renderBlockEntities(MultiBufferSource.BufferSource bufferSource, PoseStack modelView, Camera camera, double cameraX, double cameraY, double cameraZ, float tickDelta, boolean hasEntityFrustum) {
 		getLevel().getProfiler().push("build blockentities");
 
 		int shadowBlockEntities = 0;
