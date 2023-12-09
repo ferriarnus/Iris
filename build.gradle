@@ -182,12 +182,9 @@ dependencies {
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
     implementation(fg.deobf("maven.modrinth:embeddium:0.2.12+mc1.20.1"))
-    //implementation "maven.modrinth:rubidium:0.7.0a"
 
-    minecraftLibrary("org.anarres:jcpp:1.4.14") {transitive = false}
-    shade("org.anarres:jcpp:1.4.14") {transitive = false}
-    minecraftLibrary ("io.github.douira:glsl-transformer:2.0.0-shadow") {transitive = false}
-    shade ("io.github.douira:glsl-transformer:2.0.0-shadow") {transitive = false}
+    minecraftLibrary(shade("org.anarres:jcpp:1.4.14")) {transitive = false}
+    minecraftLibrary(shade(project(path: ":glsl-relocated", configuration: "bundledJar"))) {transitive = false}
     minecraftLibrary("it.unimi.dsi:fastutil:8.5.8") {transitive = false}
 
     minecraftLibrary("org.junit.jupiter:junit-jupiter:5.8.1")
