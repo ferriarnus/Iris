@@ -181,7 +181,7 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-    implementation(fg.deobf("maven.modrinth:embeddium:0.1.4+mc1.20.1"))
+    implementation(fg.deobf("maven.modrinth:embeddium:0.2.12+mc1.20.1"))
     //implementation "maven.modrinth:rubidium:0.7.0a"
 
     minecraftLibrary("org.anarres:jcpp:1.4.14") {transitive = false}
