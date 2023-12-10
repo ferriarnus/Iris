@@ -27,7 +27,7 @@ public class MixinCommonVertexAttributes {
 	private static CommonVertexAttribute[] $VALUES;
 
 	@Mutable
-	@Shadow
+	@Shadow(remap = false)
 	@Final
 	public static int COUNT;
 

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ChunkMeshBufferBuilder.class)
 public class MixinChunkVertexBufferBuilder implements ContextAwareVertexWriter {
-	@Shadow
+	@Shadow(remap = false)
 	@Final
 	private ChunkVertexEncoder encoder;
 
