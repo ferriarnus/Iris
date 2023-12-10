@@ -10,22 +10,38 @@ import org.spongepowered.asm.mixin.Shadow;
  */
 @Mixin(Matrix4f.class)
 public class MixinMatrix4f implements Matrix4fAccess {
-	@Shadow protected float m00;
-	@Shadow protected float m01;
-	@Shadow protected float m02;
-	@Shadow	protected float m03;
-	@Shadow	protected float m10;
-	@Shadow	protected float m11;
-	@Shadow	protected float m12;
-	@Shadow	protected float m13;
-	@Shadow	protected float m20;
-	@Shadow	protected float m21;
-	@Shadow	protected float m22;
-	@Shadow	protected float m23;
-	@Shadow	protected float m30;
-	@Shadow	protected float m31;
-	@Shadow	protected float m32;
-	@Shadow	protected float m33;
+	@Shadow(remap = false)
+	protected float m00;
+	@Shadow(remap = false)
+	protected float m01;
+	@Shadow(remap = false)
+	protected float m02;
+	@Shadow(remap = false)
+	protected float m03;
+	@Shadow(remap = false)
+	protected float m10;
+	@Shadow(remap = false)
+	protected float m11;
+	@Shadow(remap = false)
+	protected float m12;
+	@Shadow(remap = false)
+	protected float m13;
+	@Shadow(remap = false)
+	protected float m20;
+	@Shadow(remap = false)
+	protected float m21;
+	@Shadow(remap = false)
+	protected float m22;
+	@Shadow(remap = false)
+	protected float m23;
+	@Shadow(remap = false)
+	protected float m30;
+	@Shadow(remap = false)
+	protected float m31;
+	@Shadow(remap = false)
+	protected float m32;
+	@Shadow(remap = false)
+	protected float m33;
 
 	@Override
 	public void copyFromArray(float[] m) {
