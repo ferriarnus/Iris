@@ -14,19 +14,19 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(AdvancedShadowCullingFrustum.class)
 public abstract class MixinAdvancedShadowCullingFrustum implements ViewportProvider, Frustum {
-	@Shadow(remap = false)
+	@Shadow
 	protected abstract int checkCornerVisibility(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-	@Shadow(remap = false)
+	@Shadow
 	public double x;
 
-	@Shadow(remap = false)
+	@Shadow
 	public double y;
 
-	@Shadow(remap = false)
+	@Shadow
 	public double z;
 
-	@Shadow(remap = false)
+	@Shadow
 	@Final
 	protected BoxCuller boxCuller;
 

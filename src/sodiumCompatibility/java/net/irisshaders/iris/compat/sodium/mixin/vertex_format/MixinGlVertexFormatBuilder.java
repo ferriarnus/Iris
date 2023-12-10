@@ -15,10 +15,10 @@ import java.util.EnumMap;
 
 @Mixin(GlVertexFormat.Builder.class)
 public class MixinGlVertexFormatBuilder<T extends Enum<T>> {
-	@Shadow(remap = false)
+	@Shadow
 	@Final
 	private int stride;
-	@Shadow(remap = false)
+	@Shadow
 	@Final
 	private EnumMap<T, GlVertexAttribute> attributes;
 	private static final GlVertexAttribute EMPTY
