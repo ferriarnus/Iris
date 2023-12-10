@@ -38,16 +38,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(CloudRenderer.class)
 public abstract class MixinCloudRenderer {
-	@Shadow
+	@Shadow(remap = false)
 	protected abstract void rebuildGeometry(BufferBuilder bufferBuilder, int cloudDistance, int centerCellX, int centerCellZ);
 
 	@Shadow
 	private ShaderInstance shader;
 
-	@Shadow
+	@Shadow(remap = false)
 	protected abstract void applyFogModifiers(ClientLevel world, FogRenderer.FogData fogData, LocalPlayer player, int cloudDistance, float tickDelta);
 
-	@Shadow
+	@Shadow(remap = false)
 	@Final
 	private FogRenderer.FogData fogData;
 	@Unique
@@ -56,7 +56,7 @@ public abstract class MixinCloudRenderer {
 	@Unique
 	private int prevCenterCellXIris, prevCenterCellYIris, cachedRenderDistanceIris;
 
-	@Inject(method = "render", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "render", at = @At(value = "HEAD"), cancellable = true, remap = false)
 	private void buildIrisVertexBuffer(ClientLevel world, LocalPlayer player, PoseStack matrices, Matrix4f projectionMatrix, float ticks, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo ci) {
 		if (IrisApi.getInstance().isShaderPackInUse()) {
 			ci.cancel();
@@ -169,12 +169,12 @@ public abstract class MixinCloudRenderer {
 		RenderSystem.setShaderFogStart(previousStart);
 	}
 
-	@ModifyArg(method = "rebuildGeometry", at = @At(value = "INVOKE", target = "Lorg/lwjgl/system/MemoryStack;nmalloc(I)J"))
+	@ModifyArg(method = "rebuildGeometry", at = @At(value = "INVOKE", target = "Lorg/lwjgl/system/MemoryStack;nmalloc(I)J"), remap = false)
 	private int allocateNewSize(int size) {
 		return IrisApi.getInstance().isShaderPackInUse() ? 480 : size;
 	}
 
-	@Inject(method = "writeVertex", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "writeVertex", at = @At("HEAD"), cancellable = true, remap = false)
 	private static void writeIrisVertex(long buffer, float x, float y, float z, int color, CallbackInfoReturnable<Long> cir) {
 		if (IrisApi.getInstance().isShaderPackInUse()) {
 			CloudVertex.write(buffer, x, y, z, color);
@@ -182,7 +182,7 @@ public abstract class MixinCloudRenderer {
 		}
 	}
 
-	@ModifyArg(method = "rebuildGeometry", at = @At(value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/api/vertex/buffer/VertexBufferWriter;push(Lorg/lwjgl/system/MemoryStack;JILnet/caffeinemc/mods/sodium/api/vertex/format/VertexFormatDescription;)V"), index = 3)
+	@ModifyArg(method = "rebuildGeometry", at = @At(value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/api/vertex/buffer/VertexBufferWriter;push(Lorg/lwjgl/system/MemoryStack;JILnet/caffeinemc/mods/sodium/api/vertex/format/VertexFormatDescription;)V"), index = 3, remap = false)
 	private VertexFormatDescription modifyArgIris(VertexFormatDescription vertexFormatDescription) {
 		if (IrisApi.getInstance().isShaderPackInUse()) {
 			return CloudVertex.FORMAT;

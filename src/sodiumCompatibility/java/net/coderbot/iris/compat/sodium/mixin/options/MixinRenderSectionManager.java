@@ -14,7 +14,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinRenderSectionManager {
     @Redirect(method = "getSearchDistance", remap = false,
             at = @At(value = "FIELD",
-                    target = "Lme/jellysquid/mods/sodium/client/gui/SodiumGameOptions$PerformanceSettings;useFogOcclusion:Z"))
+                    target = "Lme/jellysquid/mods/sodium/client/gui/SodiumGameOptions$PerformanceSettings;useFogOcclusion:Z",
+                    remap = false))
     private boolean iris$disableFogOcclusion(SodiumGameOptions.PerformanceSettings settings) {
         if (Iris.getCurrentPack().isPresent()) {
             return false;
