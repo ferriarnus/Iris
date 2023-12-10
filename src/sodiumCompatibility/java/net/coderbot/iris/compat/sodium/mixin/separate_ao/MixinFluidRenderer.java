@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class MixinFluidRenderer {
 	private boolean flipNormal;
 
-	@Shadow(remap = false)
+	@Shadow
 	protected abstract void writeQuad(ChunkModelBuilder builder, Material material, BlockPos offset, ModelQuadView quad, ModelQuadFacing facing, boolean flip);
 
 	@Unique

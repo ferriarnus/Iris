@@ -14,9 +14,9 @@ import java.util.SortedSet;
 
 @Mixin(SodiumWorldRenderer.class)
 public interface SodiumWorldRendererAccessor {
-	@Invoker(remap = false)
+	@Invoker
 	void invokeRenderBlockEntities(PoseStack matrices, RenderBuffers bufferBuilders, Long2ObjectMap<SortedSet<BlockDestructionProgress>> blockBreakingProgressions, float tickDelta, MultiBufferSource.BufferSource immediate, double x, double y, double z, BlockEntityRenderDispatcher blockEntityRenderer);
 
-	@Invoker(remap = false)
+	@Invoker
 	void invokeRenderGlobalBlockEntities(PoseStack matrices, RenderBuffers bufferBuilders, Long2ObjectMap<SortedSet<BlockDestructionProgress>> blockBreakingProgressions, float tickDelta, MultiBufferSource.BufferSource immediate, double x, double y, double z, BlockEntityRenderDispatcher blockEntityRenderer);
 }

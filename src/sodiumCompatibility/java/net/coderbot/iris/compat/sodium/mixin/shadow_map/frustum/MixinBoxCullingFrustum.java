@@ -17,7 +17,7 @@ public class MixinBoxCullingFrustum implements Frustum, ViewportProvider {
 	@Final
 	private BoxCuller boxCuller;
 
-	@Shadow(remap = false)
+	@Shadow
 	private double x, y, z;
 
 	@Unique

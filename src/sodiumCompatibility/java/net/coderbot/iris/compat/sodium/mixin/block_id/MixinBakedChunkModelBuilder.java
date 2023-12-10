@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(BakedChunkModelBuilder.class)
 public class MixinBakedChunkModelBuilder implements ContextAwareVertexWriter {
 
-	@Shadow(remap = false)
+	@Shadow
 	@Final
 	private ChunkMeshBufferBuilder[] vertexBuffers;
 
