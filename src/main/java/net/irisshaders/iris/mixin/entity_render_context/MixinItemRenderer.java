@@ -1,9 +1,9 @@
-package net.coderbot.iris.mixin.entity_render_context;
+package net.irisshaders.iris.mixin.entity_render_context;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.coderbot.iris.block_rendering.BlockRenderingSettings;
-import net.coderbot.iris.shaderpack.materialmap.NamespacedId;
-import net.coderbot.iris.uniforms.CapturedRenderingState;
+import net.irisshaders.iris.shaderpack.materialmap.NamespacedId;
+import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
+import net.irisshaders.iris.uniforms.CapturedRenderingState;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -18,9 +18,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(ItemRenderer.class)
+@Mixin(value = ItemRenderer.class, priority = 1010)
 public abstract class MixinItemRenderer {
 	@Unique
 	private int previousBeValue;
@@ -38,19 +37,19 @@ public abstract class MixinItemRenderer {
 
 	@Unique
 	private void iris$setupId(ItemStack pItemRenderer0) {
-		if (BlockRenderingSettings.INSTANCE.getItemIds() == null) return;
+		if (WorldRenderingSettings.INSTANCE.getItemIds() == null) return;
 
 		if (pItemRenderer0.getItem() instanceof BlockItem blockItem && !(pItemRenderer0.getItem() instanceof SolidBucketItem)) {
-			if (BlockRenderingSettings.INSTANCE.getBlockStateIds() == null) return;
+			if (WorldRenderingSettings.INSTANCE.getBlockStateIds() == null) return;
 
 			previousBeValue = CapturedRenderingState.INSTANCE.getCurrentRenderedBlockEntity();
 			CapturedRenderingState.INSTANCE.setCurrentBlockEntity(1);
 
-			CapturedRenderingState.INSTANCE.setCurrentRenderedItem(BlockRenderingSettings.INSTANCE.getBlockStateIds().getOrDefault(blockItem.getBlock().defaultBlockState(), 0));
+			CapturedRenderingState.INSTANCE.setCurrentRenderedItem(WorldRenderingSettings.INSTANCE.getBlockStateIds().getOrDefault(blockItem.getBlock().defaultBlockState(), 0));
 		} else {
 			ResourceLocation location = BuiltInRegistries.ITEM.getKey(pItemRenderer0.getItem());
 
-			CapturedRenderingState.INSTANCE.setCurrentRenderedItem(BlockRenderingSettings.INSTANCE.getItemIds().applyAsInt(new NamespacedId(location.getNamespace(), location.getPath())));
+			CapturedRenderingState.INSTANCE.setCurrentRenderedItem(WorldRenderingSettings.INSTANCE.getItemIds().applyAsInt(new NamespacedId(location.getNamespace(), location.getPath())));
 		}
 	}
 

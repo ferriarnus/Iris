@@ -1,8 +1,9 @@
-package net.coderbot.iris;
+package net.irisshaders.iris;
 
 import com.google.common.base.Throwables;
 import com.mojang.blaze3d.platform.GlDebug;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.coderbot.iris.UpdateChecker;
 import net.coderbot.iris.config.IrisConfig;
 import net.coderbot.iris.gl.GLDebug;
 import net.coderbot.iris.gl.shader.ShaderCompileException;

@@ -1,7 +1,7 @@
-package net.coderbot.iris.mixin.texture;
+package net.irisshaders.iris.mixin.texture;
 
-import net.coderbot.iris.texture.format.TextureFormatLoader;
-import net.coderbot.iris.texture.pbr.PBRTextureManager;
+import net.irisshaders.iris.texture.format.TextureFormatLoader;
+import net.irisshaders.iris.texture.pbr.PBRTextureManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.spongepowered.asm.mixin.Mixin;

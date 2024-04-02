@@ -1,4 +1,4 @@
-package net.coderbot.iris.mixin.integrationtest;
+package net.irisshaders.iris.mixin.integrationtest;
 
 
 import com.mojang.blaze3d.pipeline.RenderTarget;

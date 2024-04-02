@@ -1,13 +1,13 @@
-package net.coderbot.iris.mixin.fantastic;
+package net.irisshaders.iris.mixin.fantastic;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.culling.Frustum;
 import org.joml.Matrix4f;
-import net.coderbot.iris.Iris;
-import net.coderbot.iris.fantastic.ParticleRenderingPhase;
-import net.coderbot.iris.fantastic.PhasedParticleEngine;
-import net.coderbot.iris.shaderpack.ParticleRenderingSettings;
-import net.coderbot.iris.pipeline.WorldRenderingPipeline;
+import net.irisshaders.iris.Iris;
+import net.irisshaders.iris.fantastic.ParticleRenderingPhase;
+import net.irisshaders.iris.fantastic.PhasedParticleEngine;
+import net.irisshaders.iris.pipeline.WorldRenderingPipeline;
+import net.irisshaders.iris.shaderpack.properties.ParticleRenderingSettings;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
@@ -36,7 +36,7 @@ public class MixinLevelRenderer {
 	private Minecraft minecraft;
 
 	@Shadow
-	private RenderBuffers renderBuffers;
+	public RenderBuffers renderBuffers;
 
 	@Inject(method = "renderLevel", at = @At("HEAD"))
 	private void iris$resetParticleManagerPhase(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
