@@ -19,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinHorseArmorLayer {
 	@Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/animal/horse/Horse;FFFFFF)V", at = @At(value = "HEAD"))
 	private void changeId(PoseStack pHorseArmorLayer0, MultiBufferSource pMultiBufferSource1, int pInt2, Horse pHorse3, float pFloat4, float pFloat5, float pFloat6, float pFloat7, float pFloat8, float pFloat9, CallbackInfo ci) {
-		if (WorldRenderingSettings.INSTANCE.getItemIds() == null || !(pHorse3.getArmor().getItem() instanceof HorseArmorItem)) return;
+		if (WorldRenderingSettings.INSTANCE.getItemIds() == null || !(pHorse3.getArmor().getItem() instanceof HorseArmorItem))
+			return;
 
 		ResourceLocation location = BuiltInRegistries.ITEM.getKey((pHorse3.getArmor().getItem()));
 		CapturedRenderingState.INSTANCE.setCurrentRenderedItem(WorldRenderingSettings.INSTANCE.getItemIds().applyAsInt(new NamespacedId(location.getNamespace(), location.getPath())));

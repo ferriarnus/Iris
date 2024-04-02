@@ -1,34 +1,32 @@
-package net.coderbot.iris.pipeline.newshader;
+package net.irisshaders.iris.pipeline.programs;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.coderbot.iris.Iris;
-import net.coderbot.iris.gl.blending.AlphaTest;
-import net.coderbot.iris.gl.blending.BlendModeOverride;
-import net.coderbot.iris.gl.blending.BufferBlendOverride;
-import net.coderbot.iris.gl.framebuffer.GlFramebuffer;
-import net.coderbot.iris.pipeline.ShaderPrinter;
-import net.coderbot.iris.pipeline.WorldRenderingPipeline;
-import net.coderbot.iris.pipeline.newshader.fallback.FallbackShader;
-import net.coderbot.iris.pipeline.newshader.fallback.ShaderSynthesizer;
-import net.coderbot.iris.pipeline.transform.PatchShaderType;
-import net.coderbot.iris.pipeline.transform.TransformPatcher;
-import net.coderbot.iris.shaderpack.PackRenderTargetDirectives;
-import net.coderbot.iris.shaderpack.ProgramSource;
-import net.coderbot.iris.shaderpack.loading.ProgramId;
-import net.coderbot.iris.uniforms.CommonUniforms;
-import net.coderbot.iris.uniforms.FrameUpdateNotifier;
-import net.coderbot.iris.uniforms.VanillaUniforms;
-import net.coderbot.iris.uniforms.builtin.BuiltinReplacementUniforms;
-import net.coderbot.iris.uniforms.custom.CustomUniforms;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import net.irisshaders.iris.gl.blending.AlphaTest;
+import net.irisshaders.iris.gl.blending.BlendModeOverride;
+import net.irisshaders.iris.gl.blending.BufferBlendOverride;
+import net.irisshaders.iris.gl.framebuffer.GlFramebuffer;
+import net.irisshaders.iris.gl.state.FogMode;
+import net.irisshaders.iris.gl.state.ShaderAttributeInputs;
+import net.irisshaders.iris.pipeline.IrisRenderingPipeline;
+import net.irisshaders.iris.pipeline.WorldRenderingPipeline;
+import net.irisshaders.iris.pipeline.fallback.ShaderSynthesizer;
+import net.irisshaders.iris.pipeline.transform.PatchShaderType;
+import net.irisshaders.iris.pipeline.transform.ShaderPrinter;
+import net.irisshaders.iris.pipeline.transform.TransformPatcher;
+import net.irisshaders.iris.shaderpack.loading.ProgramId;
+import net.irisshaders.iris.shaderpack.programs.ProgramSource;
+import net.irisshaders.iris.uniforms.CommonUniforms;
+import net.irisshaders.iris.uniforms.FrameUpdateNotifier;
+import net.irisshaders.iris.uniforms.VanillaUniforms;
+import net.irisshaders.iris.uniforms.builtin.BuiltinReplacementUniforms;
+import net.irisshaders.iris.uniforms.custom.CustomUniforms;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.FilePackResources;
 import net.minecraft.server.packs.PathPackResources;
-import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.neoforged.fml.loading.FMLPaths;
 import org.apache.commons.io.IOUtils;
 
@@ -42,11 +40,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class NewShaderTests {
+public class ShaderCreator {
 	public static ExtendedShader create(WorldRenderingPipeline pipeline, String name, ProgramSource source, ProgramId programId, GlFramebuffer writingToBeforeTranslucent,
-										GlFramebuffer writingToAfterTranslucent, GlFramebuffer baseline, AlphaTest fallbackAlpha,
+										GlFramebuffer writingToAfterTranslucent, AlphaTest fallbackAlpha,
 										VertexFormat vertexFormat, ShaderAttributeInputs inputs, FrameUpdateNotifier updateNotifier,
-										NewWorldRenderingPipeline parent, Supplier<ImmutableSet<Integer>> flipped, FogMode fogMode, boolean isIntensity,
+										IrisRenderingPipeline parent, Supplier<ImmutableSet<Integer>> flipped, FogMode fogMode, boolean isIntensity,
 										boolean isFullbright, boolean isShadowPass, boolean isLines, CustomUniforms customUniforms) throws IOException {
 		AlphaTest alpha = source.getDirectives().getAlphaTestOverride().orElse(fallbackAlpha);
 		BlendModeOverride blendModeOverride = source.getDirectives().getBlendModeOverride().orElse(programId.getBlendModeOverride());
@@ -55,13 +53,17 @@ public class NewShaderTests {
 			name,
 			source.getVertexSource().orElseThrow(RuntimeException::new),
 			source.getGeometrySource().orElse(null),
+			source.getTessControlSource().orElse(null),
+			source.getTessEvalSource().orElse(null),
 			source.getFragmentSource().orElseThrow(RuntimeException::new),
 			alpha, isLines, true, inputs, pipeline.getTextureMap());
 		String vertex = transformed.get(PatchShaderType.VERTEX);
 		String geometry = transformed.get(PatchShaderType.GEOMETRY);
+		String tessControl = transformed.get(PatchShaderType.TESS_CONTROL);
+		String tessEval = transformed.get(PatchShaderType.TESS_EVAL);
 		String fragment = transformed.get(PatchShaderType.FRAGMENT);
 
-		StringBuilder shaderJson = new StringBuilder("{\n" +
+		String shaderJsonString = "{\n" +
 			"    \"blend\": {\n" +
 			"        \"func\": \"add\",\n" +
 			"        \"srcrgb\": \"srcalpha\",\n" +
@@ -91,23 +93,21 @@ public class NewShaderTests {
 			"        { \"name\": \"iris_FogEnd\", \"type\": \"float\", \"count\": 1, \"values\": [ 1.0 ] },\n" +
 			"        { \"name\": \"iris_FogColor\", \"type\": \"float\", \"count\": 4, \"values\": [ 0.0, 0.0, 0.0, 0.0 ] }\n" +
 			"    ]\n" +
-			"}");
-
-		String shaderJsonString = shaderJson.toString();
+			"}";
 
 		ShaderPrinter.printProgram(name).addSources(transformed).addJson(shaderJsonString).print();
 
-		ResourceProvider shaderResourceFactory = new IrisProgramResourceFactory(shaderJsonString, vertex, geometry, fragment);
+		ResourceProvider shaderResourceFactory = new IrisProgramResourceFactory(shaderJsonString, vertex, geometry, tessControl, tessEval, fragment);
 
 		List<BufferBlendOverride> overrides = new ArrayList<>();
 		source.getDirectives().getBufferBlendOverrides().forEach(information -> {
-			int index = Ints.indexOf(source.getDirectives().getDrawBuffers(), information.getIndex());
+			int index = Ints.indexOf(source.getDirectives().getDrawBuffers(), information.index());
 			if (index > -1) {
-				overrides.add(new BufferBlendOverride(index, information.getBlendMode()));
+				overrides.add(new BufferBlendOverride(index, information.blendMode()));
 			}
 		});
 
-		return new ExtendedShader(shaderResourceFactory, name, vertexFormat, writingToBeforeTranslucent, writingToAfterTranslucent, baseline, blendModeOverride, alpha, uniforms -> {
+		return new ExtendedShader(shaderResourceFactory, name, vertexFormat, tessControl != null || tessEval != null, writingToBeforeTranslucent, writingToAfterTranslucent, blendModeOverride, alpha, uniforms -> {
 			CommonUniforms.addDynamicUniforms(uniforms, FogMode.PER_VERTEX);
 			customUniforms.assignTo(uniforms);
 			//SamplerUniforms.addWorldSamplerUniforms(uniforms);
@@ -115,14 +115,14 @@ public class NewShaderTests {
 			BuiltinReplacementUniforms.addBuiltinReplacementUniforms(uniforms);
 			VanillaUniforms.addVanillaUniforms(uniforms);
 		}, (samplerHolder, imageHolder) -> {
-			parent.addGbufferOrShadowSamplers(samplerHolder, imageHolder, flipped, isShadowPass, inputs.toAvailability());
-		}, isIntensity, parent, inputs, overrides, customUniforms);
+			parent.addGbufferOrShadowSamplers(samplerHolder, imageHolder, flipped, isShadowPass, inputs.hasTex(), inputs.hasLight(), inputs.hasOverlay());
+		}, isIntensity, parent, overrides, customUniforms);
 	}
 
 	public static FallbackShader createFallback(String name, GlFramebuffer writingToBeforeTranslucent,
 												GlFramebuffer writingToAfterTranslucent, AlphaTest alpha,
 												VertexFormat vertexFormat, BlendModeOverride blendModeOverride,
-												NewWorldRenderingPipeline parent, FogMode fogMode, boolean entityLighting,
+												IrisRenderingPipeline parent, FogMode fogMode, boolean entityLighting,
 												boolean isGlint, boolean isText, boolean intensityTex, boolean isFullbright) throws IOException {
 		ShaderAttributeInputs inputs = new ShaderAttributeInputs(vertexFormat, isFullbright, false, isGlint, isText);
 
@@ -174,24 +174,14 @@ public class NewShaderTests {
 			.addJson(shaderJsonString)
 			.print();
 
-		ResourceProvider shaderResourceFactory = new IrisProgramResourceFactory(shaderJsonString, vertex, null, fragment);
+		ResourceProvider shaderResourceFactory = new IrisProgramResourceFactory(shaderJsonString, vertex, null, null, null, fragment);
 
 		return new FallbackShader(shaderResourceFactory, name, vertexFormat, writingToBeforeTranslucent,
-			writingToAfterTranslucent, blendModeOverride, alpha.getReference(), parent);
+			writingToAfterTranslucent, blendModeOverride, alpha.reference(), parent);
 	}
 
-	private static class IrisProgramResourceFactory implements ResourceProvider {
-		private final String json;
-		private final String vertex;
-		private final String geometry;
-		private final String fragment;
-
-		public IrisProgramResourceFactory(String json, String vertex, String geometry, String fragment) {
-			this.json = json;
-			this.vertex = vertex;
-			this.geometry = geometry;
-			this.fragment = fragment;
-		}
+	private record IrisProgramResourceFactory(String json, String vertex, String geometry, String tessControl,
+											  String tessEval, String fragment) implements ResourceProvider {
 
 		@Override
 		public Optional<Resource> getResource(ResourceLocation id) {
@@ -206,6 +196,16 @@ public class NewShaderTests {
 					return Optional.empty();
 				}
 				return Optional.of(new StringResource(id, geometry));
+			} else if (path.endsWith("tcs")) {
+				if (tessControl == null) {
+					return Optional.empty();
+				}
+				return Optional.of(new StringResource(id, tessControl));
+			} else if (path.endsWith("tes")) {
+				if (tessEval == null) {
+					return Optional.empty();
+				}
+				return Optional.of(new StringResource(id, tessEval));
 			} else if (path.endsWith("fsh")) {
 				return Optional.of(new StringResource(id, fragment));
 			}
@@ -215,17 +215,15 @@ public class NewShaderTests {
 	}
 
 	private static class StringResource extends Resource {
-		private final ResourceLocation id;
 		private final String content;
 
 		private StringResource(ResourceLocation id, String content) {
-			super(new PathPackResources("<iris shaderpack shaders>", FMLPaths.CONFIGDIR.get(), true), (IoSupplier<InputStream>) () -> new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
-			this.id = id;
+			super(new PathPackResources("<iris shaderpack shaders>", FMLPaths.CONFIGDIR.get(), true), () -> new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
 			this.content = content;
 		}
 
 		@Override
-		public InputStream open() throws IOException {
+		public InputStream open() {
 			return IOUtils.toInputStream(content, StandardCharsets.UTF_8);
 		}
 	}

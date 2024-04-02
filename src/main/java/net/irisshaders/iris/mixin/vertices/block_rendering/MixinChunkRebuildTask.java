@@ -1,14 +1,13 @@
-package net.coderbot.iris.mixin.vertices.block_rendering;
+package net.irisshaders.iris.mixin.vertices.block_rendering;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
-import net.coderbot.iris.block_rendering.BlockRenderingSettings;
-import net.coderbot.iris.vertices.BlockSensitiveBufferBuilder;
-import net.coderbot.iris.vertices.ExtendedDataHelper;
-import net.minecraft.client.renderer.SectionBufferBuilderPack;
+import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
+import net.irisshaders.iris.vertices.BlockSensitiveBufferBuilder;
+import net.irisshaders.iris.vertices.ExtendedDataHelper;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SectionBufferBuilderPack;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.chunk.SectionRenderDispatcher;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
@@ -16,7 +15,6 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -28,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -49,7 +46,7 @@ public class MixinChunkRebuildTask {
 
 	@Unique
 	private Object2IntMap<BlockState> getBlockStateIds() {
-		return BlockRenderingSettings.INSTANCE.getBlockStateIds();
+		return WorldRenderingSettings.INSTANCE.getBlockStateIds();
 	}
 
 	@Unique
@@ -62,7 +59,7 @@ public class MixinChunkRebuildTask {
 	}
 
 	@Inject(method = RENDER, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockRenderDispatcher;renderLiquid(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/BlockAndTintGetter;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/material/FluidState;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void iris$onRenderLiquid(float cameraX, float cameraY, float cameraZ, SectionBufferBuilderPack buffers, CallbackInfoReturnable<SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults> cir, SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults results,int i, BlockPos blockPos, BlockPos blockPos2, VisGraph chunkOcclusionDataBuilder, RenderChunkRegion chunkRendererRegion, PoseStack poseStack, Set set2, RandomSource random, BlockRenderDispatcher blockRenderManager, Iterator<BlockPos> var15, BlockPos blockPos3, BlockState blockState, FluidState fluidState, RenderType renderType, BufferBuilder bufferBuilder2) {
+	private void iris$onRenderLiquid(float cameraX, float cameraY, float cameraZ, SectionBufferBuilderPack buffers, CallbackInfoReturnable<SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults> cir, SectionRenderDispatcher.RenderSection.RebuildTask.CompileResults results, int i, BlockPos blockPos, BlockPos blockPos2, VisGraph chunkOcclusionDataBuilder, RenderChunkRegion chunkRendererRegion, PoseStack poseStack, Set set2, RandomSource random, BlockRenderDispatcher blockRenderManager, Iterator<BlockPos> var15, BlockPos blockPos3, BlockState blockState, FluidState fluidState, RenderType renderType, BufferBuilder bufferBuilder2) {
 		if (bufferBuilder2 instanceof BlockSensitiveBufferBuilder) {
 			lastBufferBuilder = ((BlockSensitiveBufferBuilder) bufferBuilder2);
 			// All fluids have a ShadersMod render type of 1, to match behavior of Minecraft 1.7 and earlier.

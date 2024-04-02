@@ -51,17 +51,6 @@ public class BoxCuller {
 			return true;
 		}
 
-		return maxZ < -this.maxDistance || minZ > this.maxDistance;
-
-	public boolean isCulledSodium(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-		if (maxX < -this.maxDistance || minX > this.maxDistance) {
-			return true;
-		}
-
-		if (maxY < -this.maxDistance || minY > this.maxDistance) {
-			return true;
-		}
-
 		if (maxZ < -this.maxDistance || minZ > this.maxDistance) {
 			return true;
 		}
