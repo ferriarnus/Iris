@@ -1,9 +1,8 @@
-package net.coderbot.iris.compat.sodium.mixin.vertex_format;
+package net.irisshaders.iris.compat.sodium.mixin.vertex_format;
 
 import me.jellysquid.mods.sodium.client.gl.attribute.GlVertexAttribute;
 import me.jellysquid.mods.sodium.client.gl.attribute.GlVertexAttributeFormat;
 import me.jellysquid.mods.sodium.client.gl.attribute.GlVertexFormat;
-import net.coderbot.iris.compat.sodium.impl.vertex_format.IrisChunkMeshAttributes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -15,19 +14,19 @@ import java.util.EnumMap;
 
 @Mixin(GlVertexFormat.Builder.class)
 public class MixinGlVertexFormatBuilder<T extends Enum<T>> {
+	private static final GlVertexAttribute EMPTY
+		= new GlVertexAttribute(GlVertexAttributeFormat.FLOAT, 0, false, 0, 0, false);
 	@Shadow(remap = false)
 	@Final
 	private int stride;
 	@Shadow(remap = false)
 	@Final
 	private EnumMap<T, GlVertexAttribute> attributes;
-	private static final GlVertexAttribute EMPTY
-			= new GlVertexAttribute(GlVertexAttributeFormat.FLOAT, 0, false, 0, 0, false);
 
 	@Redirect(method = "build",
-			at = @At(value = "INVOKE",
-					target = "java/util/EnumMap.get (Ljava/lang/Object;)Ljava/lang/Object;"),
-			remap = false)
+		at = @At(value = "INVOKE",
+		target = "java/util/EnumMap.get (Ljava/lang/Object;)Ljava/lang/Object;"),
+		remap = false)
 	private Object iris$suppressMissingAttributes(EnumMap<?, ?> map, Object key) {
 		Object value = map.get(key);
 

@@ -3,7 +3,6 @@ package net.irisshaders.iris;
 import com.google.common.base.Throwables;
 import com.mojang.blaze3d.platform.GlDebug;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.coderbot.iris.UpdateChecker;
 import net.irisshaders.iris.compat.dh.DHCompat;
 import net.irisshaders.iris.config.IrisConfig;
 import net.irisshaders.iris.gl.GLDebug;
@@ -62,7 +61,6 @@ import java.util.zip.ZipError;
 import java.util.zip.ZipException;
 
 public class Iris {
-	public static final String MODID = "iris";
 
 	/**
 	 * The user-facing name of the mod. Moved into a constant to facilitate
@@ -714,9 +712,9 @@ public class Iris {
 	 * <p>This is called right before options are loaded, so we can add key bindings here.</p>
 	 */
 	public void onEarlyInitialize() {
-		ModFileInfo iris = FMLLoader.getLoadingModList().getModFileById("iris");
+		ModFileInfo iris = FMLLoader.getLoadingModList().getModFileById("cornea");
 		if (iris == null) {
-			throw new IllegalStateException("Couldn't find the mod container for Iris");
+			throw new IllegalStateException("Couldn't find the mod container for Cornea");
 		}
 
 		IRIS_VERSION = iris.versionString();

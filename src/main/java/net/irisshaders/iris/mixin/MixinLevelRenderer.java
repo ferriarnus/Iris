@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.TickRateManager;
 import net.neoforged.fml.loading.FMLLoader;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -124,8 +125,8 @@ public class MixinLevelRenderer {
 
 		if (!warned) {
 			warned = true;
-			Iris.getUpdateChecker().getBetaInfo().ifPresent(info ->
-				Minecraft.getInstance().gui.getChat().addMessage(Component.literal("A new beta is out for Iris " + info.betaTag + ". Please redownload it.").withStyle(ChatFormatting.BOLD, ChatFormatting.RED)));
+			//Iris.getUpdateChecker().getBetaInfo().ifPresent(info ->
+			//	Minecraft.getInstance().gui.getChat().addMessage(Component.literal("A new beta is out for Iris " + info.betaTag + ". Please redownload it.").withStyle(ChatFormatting.BOLD, ChatFormatting.RED)));
 		}
 
 		if (Iris.shouldActivateWireframe() && this.minecraft.isLocalServer()) {

@@ -18,7 +18,7 @@ public class IrisSodiumCompatMixinPlugin implements IMixinConfigPlugin {
 
 	@Override
 	public void onLoad(String mixinPackage) {
-		validSodiumVersion = FMLLoader.getLoadingModList().getModFileById("rubidium") != null;
+		validSodiumVersion = FMLLoader.getLoadingModList().getModFileById("embeddium") != null;
 
 		if (!validSodiumVersion) {
 			// We can't use Iris' logger here due to classloading issues.

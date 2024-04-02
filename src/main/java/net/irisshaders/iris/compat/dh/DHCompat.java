@@ -1,11 +1,11 @@
 package net.irisshaders.iris.compat.dh;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.gl.shader.ShaderCompileException;
 import net.irisshaders.iris.pipeline.IrisRenderingPipeline;
 import net.irisshaders.iris.uniforms.CapturedRenderingState;
 import net.minecraft.client.Minecraft;
+import net.neoforged.fml.loading.FMLLoader;
 import org.joml.Matrix4f;
 
 import java.lang.invoke.MethodHandle;
@@ -60,7 +60,7 @@ public class DHCompat {
 
 	public static void run() {
 		try {
-			if (FabricLoader.getInstance().isModLoaded("distanthorizons")) {
+			if (FMLLoader.getLoadingModList().getModFileById("distanthorizons") != null) {
 				deletePipeline = MethodHandles.lookup().findVirtual(Class.forName("net.irisshaders.iris.compat.dh.DHCompatInternal"), "clear", MethodType.methodType(void.class));
 				setupEventHandlers = MethodHandles.lookup().findStatic(Class.forName("net.irisshaders.iris.compat.dh.LodRendererEvents"), "setupEventHandlers", MethodType.methodType(void.class));
 				getDepthTex = MethodHandles.lookup().findVirtual(Class.forName("net.irisshaders.iris.compat.dh.DHCompatInternal"), "getStoredDepthTex", MethodType.methodType(int.class));
@@ -81,7 +81,7 @@ public class DHCompat {
 		} catch (Throwable e) {
 			dhPresent = false;
 
-			if (FabricLoader.getInstance().isModLoaded("distanthorizons")) {
+			if (FMLLoader.getLoadingModList().getModFileById("distanthorizons") != null) {
 				if (e instanceof ExceptionInInitializerError eiie) {
 					throw new RuntimeException("Failure loading DH compat.", eiie.getCause());
 				} else {
@@ -131,7 +131,7 @@ public class DHCompat {
 		if (!dhPresent) {
 			return false;
 		}
-		
+
 		try {
 			return (boolean) checkFrame.invoke();
 		} catch (Throwable e) {

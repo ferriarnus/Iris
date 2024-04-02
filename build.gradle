@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.60'
+    id 'net.neoforged.gradle.userdev' version '7.0.97'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
@@ -74,7 +74,7 @@ dependencies {
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-    implementation("maven.modrinth:embeddium:0.2.12+mc1.20.3")
+    implementation("maven.modrinth:embeddium:0.3.11+mc1.20.4")
     //implementation "maven.modrinth:rubidium:0.7.0a"
 
     libraries("org.anarres:jcpp:1.4.14") {transitive = false}
@@ -84,14 +84,16 @@ dependencies {
     libraries("it.unimi.dsi:fastutil:8.5.8") {transitive = false}
 
     libraries("org.junit.jupiter:junit-jupiter:5.8.1")
+    compileOnly("com.seibel.distanthorizons.api:DhApi:2.0.3-a-dev")
+
+    runtimeOnly("maven.modrinth:distanthorizons:2.0.1-a-1.20.2")
+
+
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-
-    //annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    annotationProcessor 'net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5'
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
@@ -118,7 +120,7 @@ runs {
         modSource project.sourceSets.main
 
         dependencies {
-            runtime configuration(project.configurations.libraries)
+            runtime project.configurations.libraries
         }
     }
 
