@@ -86,7 +86,12 @@ dependencies {
     libraries("org.junit.jupiter:junit-jupiter:5.8.1")
     compileOnly("com.seibel.distanthorizons.api:DhApi:2.0.3-a-dev")
 
-    runtimeOnly("maven.modrinth:distanthorizons:2.0.1-a-1.20.2")
+    implementation files("libs/xycraft_core-0.7.14-pre-all.jar")
+    implementation files("libs/xycraft_world-0.7.14-pre.jar")
+    implementation files("libs/xycraft_machines-0.7.14-pre.jar")
+
+
+    //runtimeOnly("com.seibel.distanthorizons.distanthorizons:DistantHorizons:2.0.2-a-dev-1.20.4'")
 
 
 

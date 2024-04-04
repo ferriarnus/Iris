@@ -69,7 +69,7 @@ side="BOTH"
 #openGLVersion="[3.2,)"
 
 [[accessTransformers]]
-file = "accesstransformer.cfg"
+file = "META-INF/accesstransformer.cfg"
 
 [[mixins]]
 config = "iris-batched-entity-rendering.mixins.json"
@@ -103,3 +103,6 @@ config = "mixins.iris.json"
 
 [[mixins]]
 config = "mixins.iris.vertexformat.json"
+
+[[mixins]]
+config = "mixins.iris.compat.xycraft.json"
