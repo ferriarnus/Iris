@@ -1,5 +1,5 @@
 # custom sodium versions
-custom_sodium/
+#custom_sodium/
 
 # gradle
 
@@ -13,7 +13,7 @@ classes/
 *.jfr
 
 # custom sodium
-/custom_sodium/
+#/custom_sodium/
 
 # idea
 

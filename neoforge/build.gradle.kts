@@ -62,11 +62,17 @@ neoForge {
             sourceSet(sourceSets.main.get())
         }
     }
+
+    mods {
+        create("embeddium") {
+            sourceSet(sourceSets.main.get())
+        }
+    }
 }
 
 val localRuntime = configurations.create("localRuntime")
 
-val SODIUM_PATH = "sodium-neoforge-0.6.0-snapshot+mc1.21-local-modonly.jar"
+val SODIUM_PATH = "sodium-neoforge-1.21-0.6.0-alpha.1.jar"
 
 dependencies {
     compileOnly(project(":common"))
@@ -80,9 +86,9 @@ dependencies {
         isTransitive = false
     }
     if (!rootDir.resolve("custom_sodium").resolve(SODIUM_PATH).exists()) {
-        //throw IllegalStateException("Sodium jar doesn't exist!!! It needs to be at $SODIUM_PATH")
+        throw IllegalStateException("Sodium jar doesn't exist!!! It needs to be at $SODIUM_PATH")
     }
-    //implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_PATH)))
+    implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_PATH)))
     implementation("org.embeddedt:embeddium-1.21:1.0.0-beta.1+mc1.21")
 
     compileOnly(files(rootDir.resolve("DHApi.jar")))
@@ -103,6 +109,7 @@ tasks.withType<JavaCompile>().matching(notNeoTask).configureEach {
     source(project(":common").sourceSets.main.get().allSource)
     source(project(":common").sourceSets.getByName("vendored").allSource)
     source(project(":common").sourceSets.getByName("sodiumCompatibility").allSource)
+    source(project(":common").sourceSets.getByName("embeddiumCompatibility").allSource)
 }
 
 tasks.withType<Javadoc>().matching(notNeoTask).configureEach {
@@ -112,6 +119,7 @@ tasks.withType<Javadoc>().matching(notNeoTask).configureEach {
 tasks.withType<ProcessResources>().matching(notNeoTask).configureEach {
     from(project(":common").sourceSets.main.get().resources)
     from(project(":common").sourceSets.getByName("sodiumCompatibility").resources)
+    from(project(":common").sourceSets.getByName("embeddiumCompatibility").resources)
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)

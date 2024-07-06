@@ -52,7 +52,7 @@ dependencies {
     modImplementation("org.anarres:jcpp:1.4.14")
     include("org.anarres:jcpp:1.4.14")
 
-    //modImplementation(files(rootDir.resolve("custom_sodium").resolve("sodium-fabric-1.21-0.6.0-snapshot+mc1.21-local.jar")))
+    modImplementation(files(rootDir.resolve("custom_sodium").resolve("sodium-fabric-1.21-0.6.0-alpha.1.jar")))
 
     modCompileOnly(files(rootDir.resolve("DHApi.jar")))
 
@@ -97,6 +97,7 @@ tasks {
         source(project(":common").sourceSets.main.get().allSource)
         source(project(":common").sourceSets.getByName("vendored").allSource)
         source(project(":common").sourceSets.getByName("sodiumCompatibility").allSource)
+        source(project(":common").sourceSets.getByName("embeddiumCompatibility").allSource)
     }
 
     javadoc { source(project(":common").sourceSets.main.get().allJava) }
@@ -104,6 +105,7 @@ tasks {
     processResources {
         from(project(":common").sourceSets.main.get().resources)
         from(project(":common").sourceSets.getByName("sodiumCompatibility").resources)
+        from(project(":common").sourceSets.getByName("embeddiumCompatibility").resources)
 
         inputs.property("version", project.version)
 

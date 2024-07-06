@@ -3,7 +3,6 @@ package net.irisshaders.batchedentityrendering.mixin;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.caffeinemc.mods.sodium.api.memory.MemoryIntrinsics;
 import net.irisshaders.batchedentityrendering.impl.BufferBuilderExt;
 import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.Dynamic;
