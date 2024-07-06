@@ -72,7 +72,7 @@ neoForge {
 
 val localRuntime = configurations.create("localRuntime")
 
-val SODIUM_PATH = "sodium-neoforge-1.21-0.6.0-alpha.1.jar"
+val SODIUM_PATH = "sodium-neoforge-0.6.0-alpha.1-modonly.jar"
 
 dependencies {
     compileOnly(project(":common"))
@@ -88,7 +88,7 @@ dependencies {
     if (!rootDir.resolve("custom_sodium").resolve(SODIUM_PATH).exists()) {
         throw IllegalStateException("Sodium jar doesn't exist!!! It needs to be at $SODIUM_PATH")
     }
-    implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_PATH)))
+    compileOnly(files(rootDir.resolve("custom_sodium").resolve(SODIUM_PATH)))
     implementation("org.embeddedt:embeddium-1.21:1.0.0-beta.1+mc1.21")
 
     compileOnly(files(rootDir.resolve("DHApi.jar")))

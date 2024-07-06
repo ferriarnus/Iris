@@ -26,20 +26,8 @@ import java.util.Map;
 public class MixinRenderSectionManager {
 	@Shadow
 	private @NotNull SortedRenderLists renderLists;
-	@Shadow
-	private @NotNull Map<ChunkUpdateType, ArrayDeque<RenderSection>> taskLists;
 	@Unique
 	private @NotNull SortedRenderLists shadowRenderLists = SortedRenderLists.empty();
-	@Unique
-	private @NotNull Map<ChunkUpdateType, ArrayDeque<RenderSection>> shadowTaskLists = new EnumMap<>(ChunkUpdateType.class);
-
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void create(ClientLevel level, int renderDistance, CommandList commandList, CallbackInfo ci) {
-		for(int var6 = 0; var6 < ChunkUpdateType.values().length; ++var6) {
-			ChunkUpdateType type = ChunkUpdateType.values()[var6];
-			shadowTaskLists.put(type, new ArrayDeque<>());
-		}
-	}
 
 	@Redirect(method = "createTerrainRenderList", at = @At(value = "FIELD", target = "Lorg/embeddedt/embeddium/impl/render/chunk/RenderSectionManager;renderLists:Lorg/embeddedt/embeddium/impl/render/chunk/lists/SortedRenderLists;"))
 	private void useShadowRenderList(RenderSectionManager instance, SortedRenderLists value) {
@@ -47,14 +35,6 @@ public class MixinRenderSectionManager {
 			shadowRenderLists = value;
 		} else {
 			renderLists = value;
-		}
-	}
-	@Redirect(method = "createTerrainRenderList", at = @At(value = "FIELD", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;taskLists:Ljava/util/Map;"))
-	private void useShadowTaskrList(RenderSectionManager instance, @NotNull Map<ChunkUpdateType, ArrayDeque<RenderSection>> value) {
-		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) {
-			shadowTaskLists = value;
-		} else {
-			taskLists = value;
 		}
 	}
 
@@ -70,24 +50,6 @@ public class MixinRenderSectionManager {
 	}, at = @At(value = "FIELD", target = "Lorg/embeddedt/embeddium/impl/render/chunk/RenderSectionManager;renderLists:Lorg/embeddedt/embeddium/impl/render/chunk/lists/SortedRenderLists;"), remap = false)
 	private SortedRenderLists useShadowRenderList2(RenderSectionManager instance) {
 		return ShadowRenderingState.areShadowsCurrentlyBeingRendered() ? shadowRenderLists : renderLists;
-	}
-
-	@Inject(method = "updateChunks", at = @At("HEAD"), cancellable = true, remap = false)
-	private void doNotUpdateDuringShadow(boolean updateImmediately, CallbackInfo ci) {
-		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) ci.cancel();
-	}
-
-	@Inject(method = "uploadChunks", at = @At("HEAD"), cancellable = true, remap = false)
-	private void doNotUploadDuringShadow(CallbackInfo ci) {
-		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) ci.cancel();
-	}
-
-	@Redirect(method = {
-		"resetRenderLists",
-		"submitSectionTasks(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/executor/ChunkJobCollector;Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/executor/ChunkJobCollector;Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/executor/ChunkJobCollector;)V"
-	}, at = @At(value = "FIELD", target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;taskLists:Ljava/util/Map;"), remap = false)
-	private @NotNull Map<ChunkUpdateType, ArrayDeque<RenderSection>> useShadowTaskList3(RenderSectionManager instance) {
-		return ShadowRenderingState.areShadowsCurrentlyBeingRendered() ? shadowTaskLists : taskLists;
 	}
 
 	@Redirect(method = {

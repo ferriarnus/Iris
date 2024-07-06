@@ -16,10 +16,11 @@ public class MixinDefaultChunkRenderer {
 		return instance.useBlockFaceCulling;
 	}
 
-	@ModifyArg(method = "prepareTessellation", index = 2, at = @At(value = "INVOKE", target = "Lorg/embeddedt/embeddium/impl/render/chunk/DefaultChunkRenderer;createRegionTessellation(Lorg/embeddedt/embeddium/impl/gl/device/CommandList;Lorg/embeddedt/embeddium/impl/render/chunk/region/RenderRegion$DeviceResources;)Lorg/embeddedt/embeddium/impl/gl/tessellation/GlTessellation;"), remap = false)
-	private boolean doNotSortInShadow(boolean useSharedIndexBuffer) {
-		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) return false;
-
-		return useSharedIndexBuffer;
-	}
+	//TODO potentially doable, seems the field became an arg
+//	@ModifyArg(method = "prepareTessellation", index = 2, at = @At(value = "INVOKE", target = "Lorg/embeddedt/embeddium/impl/render/chunk/DefaultChunkRenderer;createRegionTessellation(Lorg/embeddedt/embeddium/impl/gl/device/CommandList;Lorg/embeddedt/embeddium/impl/render/chunk/region/RenderRegion$DeviceResources;)Lorg/embeddedt/embeddium/impl/gl/tessellation/GlTessellation;"), remap = false)
+//	private boolean doNotSortInShadow(boolean useSharedIndexBuffer) {
+//		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) return false;
+//
+//		return useSharedIndexBuffer;
+//	}
 }

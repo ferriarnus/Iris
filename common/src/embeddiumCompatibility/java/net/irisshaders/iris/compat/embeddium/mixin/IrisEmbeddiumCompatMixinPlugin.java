@@ -19,7 +19,7 @@ public class IrisEmbeddiumCompatMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public void onLoad(String mixinPackage) {
 
-		validSodiumVersion = IrisPlatformHelpers.getInstance().isModLoaded("sodium");
+		validSodiumVersion = IrisPlatformHelpers.getInstance().isModLoaded("embeddium");
 
 		if (!validSodiumVersion) {
 			// We can't use Iris' logger here due to classloading issues.
