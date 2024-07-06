@@ -35,6 +35,10 @@ tasks.forEach {
     it.group = null
 }
 
+repositories {
+    maven { url = uri("https://maven.blamejared.com") }
+}
+
 dependencies {
     minecraft(group = "com.mojang", name = "minecraft", version = MINECRAFT_VERSION)
     mappings(loom.officialMojangMappings())
@@ -45,7 +49,8 @@ dependencies {
     modCompileOnly("io.github.douira:glsl-transformer:2.0.1")
     modCompileOnly("org.anarres:jcpp:1.4.14")
 
-    modCompileOnly(files(rootDir.resolve("custom_sodium").resolve("sodium-fabric-1.21-0.6.0-snapshot+mc1.21-local.jar")))
+    //modCompileOnly(files(rootDir.resolve("custom_sodium").resolve("sodium-fabric-1.21-0.6.0-snapshot+mc1.21-local.jar")))
+    modCompileOnly("org.embeddedt:embeddium-1.21:1.0.0-beta.1+mc1.21")
 
     modCompileOnly(files(rootDir.resolve("DHApi.jar")))
 }
@@ -60,6 +65,7 @@ sourceSets {
     val headers = create("headers")
     val vendored = create("vendored")
     val sodiumCompatibility = create("sodiumCompatibility")
+    val embeddiumCompatibility = create("embeddiumCompatibility")
 
     headers.apply {
         java {
@@ -87,12 +93,20 @@ sourceSets {
         }
     }
 
+    embeddiumCompatibility.apply {
+        java {
+            compileClasspath += main.compileClasspath
+            compileClasspath += main.output
+        }
+    }
+
     main.apply {
         java {
             compileClasspath += headers.output
             compileClasspath += vendored.output
             runtimeClasspath += vendored.output
             runtimeClasspath += sodiumCompatibility.output
+            runtimeClasspath += embeddiumCompatibility.output
         }
     }
 }
@@ -109,6 +123,7 @@ loom {
         val main by creating { // to match the default mod generated for Forge
             sourceSet("vendored")
             sourceSet("sodiumCompatibility")
+            sourceSet("embeddiumCompatibility")
             sourceSet("main")
         }
     }

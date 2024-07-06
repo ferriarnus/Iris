@@ -53,6 +53,8 @@ public interface WorldRenderingPipeline {
 
 	SodiumTerrainPipeline getSodiumTerrainPipeline();
 
+	EmbeddiumTerrainPipeline getEmbeddiumTerrainPipeline();
+
 	FrameUpdateNotifier getFrameUpdateNotifier();
 
 	boolean shouldDisableVanillaEntityShadows();

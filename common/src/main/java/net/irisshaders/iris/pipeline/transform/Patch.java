@@ -4,6 +4,7 @@ public enum Patch {
 	VANILLA,
 	DH,
 	SODIUM,
+	EMBEDDIUM,
 	COMPOSITE,
 	COMPUTE
 }

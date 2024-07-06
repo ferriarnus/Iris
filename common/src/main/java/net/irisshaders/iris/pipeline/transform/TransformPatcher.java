@@ -154,6 +154,10 @@ public class TransformPatcher {
 									SodiumParameters sodiumParameters = (SodiumParameters) parameters;
 									SodiumCoreTransformer.transform(transformer, tree, root, sodiumParameters);
 									break;
+								case EMBEDDIUM:
+									SodiumParameters embeddiumParameters = (SodiumParameters) parameters;
+									SodiumCoreTransformer.transform(transformer, tree, root, embeddiumParameters);
+									break;
 								case VANILLA:
 									VanillaCoreTransformer.transform(transformer, tree, root, (VanillaParameters) parameters);
 									break;
@@ -178,6 +182,10 @@ public class TransformPatcher {
 								case SODIUM:
 									SodiumParameters sodiumParameters = (SodiumParameters) parameters;
 									SodiumTransformer.transform(transformer, tree, root, sodiumParameters);
+									break;
+								case EMBEDDIUM:
+									SodiumParameters embeddiumParameters = (SodiumParameters) parameters;
+									SodiumTransformer.transform(transformer, tree, root, embeddiumParameters);
 									break;
 								case VANILLA:
 									VanillaTransformer.transform(transformer, tree, root, (VanillaParameters) parameters);
@@ -314,6 +322,13 @@ public class TransformPatcher {
 														   Object2ObjectMap<Tri<String, TextureType, TextureStage>, String> textureMap) {
 		return transform(name, vertex, geometry, tessControl, tessEval, fragment,
 			new SodiumParameters(Patch.SODIUM, textureMap, alpha, inputs));
+	}
+
+	public static Map<PatchShaderType, String> patchEmbeddium(String name, String vertex, String geometry, String tessControl, String tessEval, String fragment,
+														   AlphaTest alpha, ShaderAttributeInputs inputs,
+														   Object2ObjectMap<Tri<String, TextureType, TextureStage>, String> textureMap) {
+		return transform(name, vertex, geometry, tessControl, tessEval, fragment,
+			new SodiumParameters(Patch.EMBEDDIUM, textureMap, alpha, inputs));
 	}
 
 	public static Map<PatchShaderType, String> patchComposite(

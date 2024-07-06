@@ -125,6 +125,11 @@ public class VanillaRenderingPipeline implements WorldRenderingPipeline {
 	}
 
 	@Override
+	public EmbeddiumTerrainPipeline getEmbeddiumTerrainPipeline() {
+		return null;
+	}
+
+	@Override
 	public FrameUpdateNotifier getFrameUpdateNotifier() {
 		// return a dummy notifier
 		return new FrameUpdateNotifier();

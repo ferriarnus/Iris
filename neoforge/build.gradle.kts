@@ -38,6 +38,7 @@ repositories {
         }
     }
     maven { url = uri("https://maven.neoforged.net/releases/") }
+    maven { url = uri("https://maven.blamejared.com") }
 
 }
 
@@ -79,9 +80,10 @@ dependencies {
         isTransitive = false
     }
     if (!rootDir.resolve("custom_sodium").resolve(SODIUM_PATH).exists()) {
-        throw IllegalStateException("Sodium jar doesn't exist!!! It needs to be at $SODIUM_PATH")
+        //throw IllegalStateException("Sodium jar doesn't exist!!! It needs to be at $SODIUM_PATH")
     }
-    implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_PATH)))
+    //implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_PATH)))
+    implementation("org.embeddedt:embeddium-1.21:1.0.0-beta.1+mc1.21")
 
     compileOnly(files(rootDir.resolve("DHApi.jar")))
 }

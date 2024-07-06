@@ -136,6 +136,7 @@ public class IrisRenderingPipeline implements WorldRenderingPipeline, ShaderRend
 	private final FrameUpdateNotifier updateNotifier;
 	private final CenterDepthSampler centerDepthSampler;
 	private final SodiumTerrainPipeline sodiumTerrainPipeline;
+	private final EmbeddiumTerrainPipeline embeddiumTerrainPipeline;
 	private final ColorSpaceConverter colorSpaceConverter;
 	private final ImmutableSet<Integer> flippedBeforeShadow;
 	private final ImmutableSet<Integer> flippedAfterPrepare;
@@ -482,6 +483,10 @@ public class IrisRenderingPipeline implements WorldRenderingPipeline, ShaderRend
 		// TODO: Create fallback Sodium shaders if the pack doesn't provide terrain shaders
 		//       Currently we use Sodium's shaders but they don't support EXP2 fog underwater.
 		this.sodiumTerrainPipeline = new SodiumTerrainPipeline(this, resolver, programSet, createTerrainSamplers,
+			shadowRenderTargets == null ? null : createShadowTerrainSamplers, createTerrainImages, createShadowTerrainImages, renderTargets, flippedAfterPrepare, flippedAfterTranslucent,
+			shadowRenderTargets != null ? shadowRenderTargets.createShadowFramebuffer(ImmutableSet.of(), resolver.resolve(ProgramId.ShadowSolid).filter(source -> !source.getDirectives().hasUnknownDrawBuffers()).map(source -> source.getDirectives().getDrawBuffers()).orElse(new int[]{0, 1})) : null, customUniforms);
+
+		this.embeddiumTerrainPipeline = new EmbeddiumTerrainPipeline(this, resolver, programSet, createTerrainSamplers,
 			shadowRenderTargets == null ? null : createShadowTerrainSamplers, createTerrainImages, createShadowTerrainImages, renderTargets, flippedAfterPrepare, flippedAfterTranslucent,
 			shadowRenderTargets != null ? shadowRenderTargets.createShadowFramebuffer(ImmutableSet.of(), resolver.resolve(ProgramId.ShadowSolid).filter(source -> !source.getDirectives().hasUnknownDrawBuffers()).map(source -> source.getDirectives().getDrawBuffers()).orElse(new int[]{0, 1})) : null, customUniforms);
 
@@ -1239,6 +1244,11 @@ public class IrisRenderingPipeline implements WorldRenderingPipeline, ShaderRend
 	@Override
 	public SodiumTerrainPipeline getSodiumTerrainPipeline() {
 		return sodiumTerrainPipeline;
+	}
+
+	@Override
+	public EmbeddiumTerrainPipeline getEmbeddiumTerrainPipeline() {
+		return embeddiumTerrainPipeline;
 	}
 
 	@Override
