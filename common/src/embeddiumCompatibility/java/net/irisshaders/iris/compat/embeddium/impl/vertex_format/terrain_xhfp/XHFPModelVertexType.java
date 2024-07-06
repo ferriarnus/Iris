@@ -1,6 +1,7 @@
 package net.irisshaders.iris.compat.embeddium.impl.vertex_format.terrain_xhfp;
 
 import net.irisshaders.iris.compat.embeddium.impl.vertex_format.IrisChunkMeshAttributes;
+import net.irisshaders.iris.compat.embeddium.impl.vertex_format.IrisGlVertexAttributeFormat;
 import org.embeddedt.embeddium.impl.gl.attribute.GlVertexAttributeFormat;
 import org.embeddedt.embeddium.impl.gl.attribute.GlVertexFormat;
 import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkMeshAttribute;
@@ -36,7 +37,7 @@ public class XHFPModelVertexType implements ChunkVertexType {
 
 	private static final float TEXTURE_SCALE = (1.0f / TEXTURE_MAX_VALUE);
 
-	public static int encodeOld(float u, float v) {
+	public static int encodeTexture(float u, float v) {
 		return ((Math.round(u * TEXTURE_MAX_VALUE) & 0xFFFF) << 0) |
 			((Math.round(v * TEXTURE_MAX_VALUE) & 0xFFFF) << 16);
 	}
@@ -51,6 +52,21 @@ public class XHFPModelVertexType implements ChunkVertexType {
 
 	static float decodePosition(short raw) {
 		return (raw & 0xFFFF) * MODEL_SCALE - MODEL_ORIGIN;
+	}
+
+	@Override
+	public float getTextureScale() {
+		return TEXTURE_SCALE;
+	}
+
+	@Override
+	public float getPositionScale() {
+		return MODEL_SCALE;
+	}
+
+	@Override
+	public float getPositionOffset() {
+		return -MODEL_ORIGIN;
 	}
 
 	@Override

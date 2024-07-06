@@ -13,7 +13,7 @@ import java.util.Set;
  * since on 1.18+ we have mixins into Iris classes that crash the game instead of just
  * spamming the log if Sodium isn't present.
  */
-public class IrisSodiumCompatMixinPlugin implements IMixinConfigPlugin {
+public class IrisEmbeddiumCompatMixinPlugin implements IMixinConfigPlugin {
 	private boolean validSodiumVersion = false;
 
 	@Override
@@ -23,7 +23,7 @@ public class IrisSodiumCompatMixinPlugin implements IMixinConfigPlugin {
 
 		if (!validSodiumVersion) {
 			// We can't use Iris' logger here due to classloading issues.
-			System.err.println("[Iris] Invalid/missing version of Sodium detected, disabling compatibility mixins!");
+			System.err.println("[Iris] Invalid/missing version of Embeddium detected, disabling compatibility mixins!");
 		}
 
 	}

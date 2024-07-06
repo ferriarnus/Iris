@@ -29,10 +29,8 @@ public abstract class MixinRegionChunkRenderer extends ShaderChunkRenderer {
 		}
 
 		attributes = new GlVertexAttributeBinding[]{
-			new GlVertexAttributeBinding(ChunkShaderBindingPoints.ATTRIBUTE_POSITION_HI,
-				vertexFormat.getAttribute(ChunkMeshAttribute.POSITION_HI)),
-			new GlVertexAttributeBinding(ChunkShaderBindingPoints.ATTRIBUTE_POSITION_LO,
-				vertexFormat.getAttribute(ChunkMeshAttribute.POSITION_LO)),
+			new GlVertexAttributeBinding(ChunkShaderBindingPoints.ATTRIBUTE_POSITION_ID,
+				vertexFormat.getAttribute(ChunkMeshAttribute.POSITION_MATERIAL_MESH)),
 			new GlVertexAttributeBinding(ChunkShaderBindingPoints.ATTRIBUTE_COLOR,
 				vertexFormat.getAttribute(ChunkMeshAttribute.COLOR_SHADE)),
 			new GlVertexAttributeBinding(ChunkShaderBindingPoints.ATTRIBUTE_BLOCK_TEXTURE,

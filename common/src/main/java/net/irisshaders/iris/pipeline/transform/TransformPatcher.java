@@ -23,6 +23,7 @@ import net.irisshaders.iris.gl.state.ShaderAttributeInputs;
 import net.irisshaders.iris.gl.texture.TextureType;
 import net.irisshaders.iris.helpers.Tri;
 import net.irisshaders.iris.pipeline.transform.parameter.ComputeParameters;
+import net.irisshaders.iris.pipeline.transform.parameter.EmbeddiumParameters;
 import net.irisshaders.iris.pipeline.transform.parameter.Parameters;
 import net.irisshaders.iris.pipeline.transform.parameter.SodiumParameters;
 import net.irisshaders.iris.pipeline.transform.parameter.TextureStageParameters;
@@ -32,6 +33,8 @@ import net.irisshaders.iris.pipeline.transform.transformer.CompatibilityTransfor
 import net.irisshaders.iris.pipeline.transform.transformer.CompositeCoreTransformer;
 import net.irisshaders.iris.pipeline.transform.transformer.CompositeTransformer;
 import net.irisshaders.iris.pipeline.transform.transformer.DHTransformer;
+import net.irisshaders.iris.pipeline.transform.transformer.EmbeddiumCoreTransformer;
+import net.irisshaders.iris.pipeline.transform.transformer.EmbeddiumTransformer;
 import net.irisshaders.iris.pipeline.transform.transformer.LayoutTransformer;
 import net.irisshaders.iris.pipeline.transform.transformer.SodiumCoreTransformer;
 import net.irisshaders.iris.pipeline.transform.transformer.SodiumTransformer;
@@ -155,8 +158,8 @@ public class TransformPatcher {
 									SodiumCoreTransformer.transform(transformer, tree, root, sodiumParameters);
 									break;
 								case EMBEDDIUM:
-									SodiumParameters embeddiumParameters = (SodiumParameters) parameters;
-									SodiumCoreTransformer.transform(transformer, tree, root, embeddiumParameters);
+									EmbeddiumParameters embeddiumParameters = (EmbeddiumParameters) parameters;
+									EmbeddiumCoreTransformer.transform(transformer, tree, root, embeddiumParameters);
 									break;
 								case VANILLA:
 									VanillaCoreTransformer.transform(transformer, tree, root, (VanillaParameters) parameters);
@@ -184,8 +187,8 @@ public class TransformPatcher {
 									SodiumTransformer.transform(transformer, tree, root, sodiumParameters);
 									break;
 								case EMBEDDIUM:
-									SodiumParameters embeddiumParameters = (SodiumParameters) parameters;
-									SodiumTransformer.transform(transformer, tree, root, embeddiumParameters);
+									EmbeddiumParameters embeddiumParameters = (EmbeddiumParameters) parameters;
+									EmbeddiumTransformer.transform(transformer, tree, root, embeddiumParameters);
 									break;
 								case VANILLA:
 									VanillaTransformer.transform(transformer, tree, root, (VanillaParameters) parameters);
@@ -328,7 +331,7 @@ public class TransformPatcher {
 														   AlphaTest alpha, ShaderAttributeInputs inputs,
 														   Object2ObjectMap<Tri<String, TextureType, TextureStage>, String> textureMap) {
 		return transform(name, vertex, geometry, tessControl, tessEval, fragment,
-			new SodiumParameters(Patch.EMBEDDIUM, textureMap, alpha, inputs));
+			new EmbeddiumParameters(Patch.EMBEDDIUM, textureMap, alpha, inputs));
 	}
 
 	public static Map<PatchShaderType, String> patchComposite(

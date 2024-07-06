@@ -318,7 +318,7 @@ public class EmbeddiumTerrainPipeline {
 				}
 			});
 
-			Map<PatchShaderType, String> transformed = TransformPatcher.patchSodium(
+			Map<PatchShaderType, String> transformed = TransformPatcher.patchEmbeddium(
 				sources.getName(),
 				sources.getVertexSource().orElse(null),
 				sources.getGeometrySource().orElse(null),
@@ -354,7 +354,7 @@ public class EmbeddiumTerrainPipeline {
 			});
 			terrainCutoutAlpha = sources.getDirectives().getAlphaTestOverride().or(terrainCutoutDefault);
 
-			Map<PatchShaderType, String> transformed = TransformPatcher.patchSodium(
+			Map<PatchShaderType, String> transformed = TransformPatcher.patchEmbeddium(
 				sources.getName(),
 				sources.getVertexSource().orElse(null),
 				sources.getGeometrySource().orElse(null),
@@ -392,7 +392,7 @@ public class EmbeddiumTerrainPipeline {
 			});
 			translucentAlpha = sources.getDirectives().getAlphaTestOverride().or(translucentDefault);
 
-			Map<PatchShaderType, String> transformed = TransformPatcher.patchSodium(
+			Map<PatchShaderType, String> transformed = TransformPatcher.patchEmbeddium(
 				sources.getName(),
 				sources.getVertexSource().orElse(null),
 				sources.getGeometrySource().orElse(null),
@@ -429,7 +429,7 @@ public class EmbeddiumTerrainPipeline {
 			});
 			shadowAlpha = sources.getDirectives().getAlphaTestOverride().or(shadowDefault);
 
-			Map<PatchShaderType, String> transformed = TransformPatcher.patchSodium(
+			Map<PatchShaderType, String> transformed = TransformPatcher.patchEmbeddium(
 				sources.getName(),
 				sources.getVertexSource().orElse(null),
 				sources.getGeometrySource().orElse(null),
@@ -437,7 +437,7 @@ public class EmbeddiumTerrainPipeline {
 				sources.getTessEvalSource().orElse(null),
 				sources.getFragmentSource().orElse(null),
 				AlphaTest.ALWAYS, inputs, parent.getTextureMap());
-			Map<PatchShaderType, String> transformedCutout = TransformPatcher.patchSodium(
+			Map<PatchShaderType, String> transformedCutout = TransformPatcher.patchEmbeddium(
 				sources.getName(),
 				sources.getVertexSource().orElse(null),
 				sources.getGeometrySource().orElse(null),
