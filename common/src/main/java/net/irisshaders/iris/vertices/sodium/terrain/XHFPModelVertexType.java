@@ -65,4 +65,21 @@ public class XHFPModelVertexType implements ChunkVertexType {
 	public ChunkVertexEncoder getEncoder() {
 		return new XHFPTerrainVertex();
 	}
+
+	public static int encodeTexture(float u, float v) {
+		return ((Math.round(u * TEXTURE_MAX_VALUE) & 0xFFFF) << 0) |
+			((Math.round(v * TEXTURE_MAX_VALUE) & 0xFFFF) << 16);
+	}
+
+	static float decodeBlockTexture(short raw) {
+		return (raw & 0xFFFF) * TEXTURE_SCALE;
+	}
+
+	static short encodePosition(float v) {
+		return (short) ((MODEL_ORIGIN + v) * MODEL_SCALE_INV);
+	}
+
+	static float decodePosition(short raw) {
+		return (raw & 0xFFFF) * MODEL_SCALE - MODEL_ORIGIN;
+	}
 }
