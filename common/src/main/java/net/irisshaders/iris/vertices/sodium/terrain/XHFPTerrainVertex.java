@@ -151,11 +151,11 @@ public class XHFPTerrainVertex implements ChunkVertexEncoder, VertexEncoderInter
 	@Override
 	public long write(long ptr, Material material, Vertex vertex, int sectionIndex) {
 		vertices[index] = vertex;
+		index++;
 		if (index == 4) {
 			ptr = write(ptr, material, vertices, sectionIndex);
 			index = 0;
 		}
-		index++;
 		return ptr;
 	}
 }
