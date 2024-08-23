@@ -1,9 +1,9 @@
 package net.irisshaders.iris.compat.sodium.mixin.entity;
 
-import net.caffeinemc.mods.sodium.api.vertex.attributes.CommonVertexAttribute;
 import net.irisshaders.iris.vertices.IrisVertexFormats;
 import net.irisshaders.iris.vertices.sodium.IrisCommonVertexAttributes;
 import org.apache.commons.lang3.ArrayUtils;
+import org.embeddedt.embeddium.api.vertex.attributes.CommonVertexAttribute;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;

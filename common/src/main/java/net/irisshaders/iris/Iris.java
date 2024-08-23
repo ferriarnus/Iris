@@ -4,8 +4,6 @@ import com.google.common.base.Throwables;
 import com.mojang.blaze3d.platform.GlDebug;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.caffeinemc.mods.sodium.api.vertex.format.VertexFormatRegistry;
-import net.caffeinemc.mods.sodium.api.vertex.serializer.VertexSerializerRegistry;
 import net.irisshaders.iris.compat.dh.DHCompat;
 import net.irisshaders.iris.config.IrisConfig;
 import net.irisshaders.iris.gl.GLDebug;
@@ -43,6 +41,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import org.embeddedt.embeddium.api.vertex.format.VertexFormatRegistry;
+import org.embeddedt.embeddium.api.vertex.serializer.VertexSerializerRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 

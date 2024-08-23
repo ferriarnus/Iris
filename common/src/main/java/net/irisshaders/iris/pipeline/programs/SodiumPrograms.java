@@ -2,14 +2,6 @@ package net.irisshaders.iris.pipeline.programs;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.primitives.Ints;
-import net.caffeinemc.mods.sodium.client.gl.GlObject;
-import net.caffeinemc.mods.sodium.client.gl.shader.GlProgram;
-import net.caffeinemc.mods.sodium.client.gl.shader.GlShader;
-import net.caffeinemc.mods.sodium.client.gl.shader.ShaderType;
-import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderBindingPoints;
-import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderInterface;
-import net.caffeinemc.mods.sodium.client.render.chunk.terrain.DefaultTerrainRenderPasses;
-import net.caffeinemc.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import net.irisshaders.iris.gl.GLDebug;
 import net.irisshaders.iris.gl.blending.AlphaTest;
 import net.irisshaders.iris.gl.blending.AlphaTests;
@@ -29,6 +21,13 @@ import net.irisshaders.iris.targets.RenderTargets;
 import net.irisshaders.iris.uniforms.custom.CustomUniforms;
 import net.irisshaders.iris.vertices.sodium.terrain.IrisModelVertexFormats;
 import net.minecraft.resources.ResourceLocation;
+import org.embeddedt.embeddium.impl.gl.GlObject;
+import org.embeddedt.embeddium.impl.gl.shader.GlProgram;
+import org.embeddedt.embeddium.impl.gl.shader.GlShader;
+import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderBindingPoints;
+import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderInterface;
+import org.embeddedt.embeddium.impl.render.chunk.terrain.DefaultTerrainRenderPasses;
+import org.embeddedt.embeddium.impl.render.chunk.terrain.TerrainRenderPass;
 import org.lwjgl.opengl.GL43C;
 
 import java.util.ArrayList;
@@ -87,8 +86,8 @@ public class SodiumPrograms {
 		Map<PatchShaderType, GlShader> newMap = new EnumMap<>(PatchShaderType.class);
 		for (Map.Entry<PatchShaderType, String> entry : transformed.entrySet()) {
 			if (entry.getValue() == null) continue;
-			newMap.put(entry.getKey(), new GlShader(ShaderType.fromGlShaderType(entry.getKey().glShaderType.id),
-				ResourceLocation.fromNamespaceAndPath("iris", "sodium-shader-" + passName), entry.getValue()));
+//			newMap.put(entry.getKey(), new GlShader(ShaderType.fromGlShaderType(entry.getKey().glShaderType.id),
+//				ResourceLocation.fromNamespaceAndPath("iris", "sodium-shader-" + passName), entry.getValue()));
 		}
 		return newMap;
 	}
@@ -147,11 +146,11 @@ public class SodiumPrograms {
 														 Supplier<ImmutableSet<Integer>> flipState,
 														 boolean containsTessellation) {
 		return builder
-			.bindAttribute("a_PositionHi", ChunkShaderBindingPoints.ATTRIBUTE_POSITION_HI)
-			.bindAttribute("a_PositionLo", ChunkShaderBindingPoints.ATTRIBUTE_POSITION_LO)
+			//.bindAttribute("a_PositionHi", ChunkShaderBindingPoints.ATTRIBUTE_POSITION_LO)
+			//.bindAttribute("a_PositionLo", ChunkShaderBindingPoints.ATTRIBUTE_POSITION_LO)
 			.bindAttribute("a_Color", ChunkShaderBindingPoints.ATTRIBUTE_COLOR)
-			.bindAttribute("a_TexCoord", ChunkShaderBindingPoints.ATTRIBUTE_TEXTURE)
-			.bindAttribute("a_LightAndData", ChunkShaderBindingPoints.ATTRIBUTE_LIGHT_MATERIAL_INDEX)
+			.bindAttribute("a_TexCoord", ChunkShaderBindingPoints.ATTRIBUTE_BLOCK_TEXTURE)
+			.bindAttribute("a_LightAndData", ChunkShaderBindingPoints.ATTRIBUTE_LIGHT_TEXTURE)
 			.bindAttribute("mc_Entity", 11)
 			.bindAttribute("mc_midTexCoord", 12)
 			.bindAttribute("at_tangent", 13)

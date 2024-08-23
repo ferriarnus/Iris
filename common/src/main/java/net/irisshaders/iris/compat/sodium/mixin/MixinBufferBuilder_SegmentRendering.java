@@ -1,4 +1,4 @@
-package net.irisshaders.batchedentityrendering.mixin;
+package net.irisshaders.iris.compat.sodium.mixin;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;

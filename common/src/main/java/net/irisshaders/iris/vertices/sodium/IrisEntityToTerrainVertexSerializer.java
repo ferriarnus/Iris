@@ -1,7 +1,7 @@
 package net.irisshaders.iris.vertices.sodium;
 
-import net.caffeinemc.mods.sodium.api.vertex.serializer.VertexSerializer;
 import net.irisshaders.iris.vertices.IrisVertexFormats;
+import org.embeddedt.embeddium.api.vertex.serializer.VertexSerializer;
 import org.lwjgl.system.MemoryUtil;
 
 public class IrisEntityToTerrainVertexSerializer implements VertexSerializer {

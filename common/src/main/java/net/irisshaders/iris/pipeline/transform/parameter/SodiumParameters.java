@@ -1,12 +1,12 @@
 package net.irisshaders.iris.pipeline.transform.parameter;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexType;
 import net.irisshaders.iris.gl.blending.AlphaTest;
 import net.irisshaders.iris.gl.texture.TextureType;
 import net.irisshaders.iris.helpers.Tri;
 import net.irisshaders.iris.pipeline.transform.Patch;
 import net.irisshaders.iris.shaderpack.texture.TextureStage;
+import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkVertexType;
 
 public class SodiumParameters extends Parameters {
 	public final ChunkVertexType vertexType;

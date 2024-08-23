@@ -2,8 +2,6 @@ package net.irisshaders.iris.compat.sodium.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
-import net.caffeinemc.mods.sodium.client.render.chunk.RenderSectionManager;
 import net.irisshaders.iris.mixin.LevelRendererAccessor;
 import net.irisshaders.iris.shadows.ShadowRenderingState;
 import net.minecraft.client.Minecraft;
@@ -12,6 +10,8 @@ import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.embeddedt.embeddium.impl.render.EmbeddiumWorldRenderer;
+import org.embeddedt.embeddium.impl.render.chunk.RenderSectionManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.SortedSet;
 
-@Mixin(SodiumWorldRenderer.class)
+@Mixin(EmbeddiumWorldRenderer.class)
 public class MixinSodiumWorldRenderer {
 	@Redirect(method = "setupTerrain", remap = false,
 		at = @At(value = "INVOKE",
@@ -45,7 +45,7 @@ public class MixinSodiumWorldRenderer {
 		ShadowRenderingState.setBlockEntityRenderFunction((shadowRenderer, bufferSource, modelView, camera, cameraX, cameraY, cameraZ, tickDelta, hasEntityFrustum, lightsOnly) -> {
 			renderLightsOnly = lightsOnly;
 
-			SodiumWorldRenderer.instance().renderBlockEntities(modelView, bufferSource, ((LevelRendererAccessor) Minecraft.getInstance().levelRenderer).getDestructionProgress(), camera, tickDelta);
+			EmbeddiumWorldRenderer.instance().renderBlockEntities(modelView, bufferSource, ((LevelRendererAccessor) Minecraft.getInstance().levelRenderer).getDestructionProgress(), camera, tickDelta);
 
 			int finalBeList = beList;
 

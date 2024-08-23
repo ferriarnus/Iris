@@ -1,14 +1,13 @@
 package net.irisshaders.iris.vertices.sodium.terrain;
 
-import net.caffeinemc.mods.sodium.api.util.ColorABGR;
-import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
-import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEncoder;
-import net.caffeinemc.mods.sodium.client.render.frapi.helper.ColorHelper;
 import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
 import net.irisshaders.iris.vertices.ExtendedDataHelper;
 import net.irisshaders.iris.vertices.NormI8;
 import net.irisshaders.iris.vertices.NormalHelper;
 import net.minecraft.util.Mth;
+import org.embeddedt.embeddium.api.util.ColorABGR;
+import org.embeddedt.embeddium.impl.render.chunk.terrain.material.Material;
+import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkVertexEncoder;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -142,5 +141,10 @@ public class XHFPTerrainVertex implements ChunkVertexEncoder, VertexEncoderInter
 		}
 
 		return ptr;
+	}
+
+	@Override
+	public long write(long ptr, Material material, Vertex vertex, int sectionIndex) {
+		return 0;
 	}
 }

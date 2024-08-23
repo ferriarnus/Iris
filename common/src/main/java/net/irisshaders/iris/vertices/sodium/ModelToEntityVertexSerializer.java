@@ -1,12 +1,12 @@
 package net.irisshaders.iris.vertices.sodium;
 
-import net.caffeinemc.mods.sodium.api.memory.MemoryIntrinsics;
-import net.caffeinemc.mods.sodium.api.util.NormI8;
-import net.caffeinemc.mods.sodium.api.vertex.format.common.ModelVertex;
-import net.caffeinemc.mods.sodium.api.vertex.serializer.VertexSerializer;
 import net.irisshaders.iris.uniforms.CapturedRenderingState;
 import net.irisshaders.iris.vertices.IrisVertexFormats;
 import net.irisshaders.iris.vertices.NormalHelper;
+import org.embeddedt.embeddium.api.memory.MemoryIntrinsics;
+import org.embeddedt.embeddium.api.util.NormI8;
+import org.embeddedt.embeddium.api.vertex.format.common.ModelVertex;
+import org.embeddedt.embeddium.api.vertex.serializer.VertexSerializer;
 import org.lwjgl.system.MemoryUtil;
 
 public class ModelToEntityVertexSerializer implements VertexSerializer {

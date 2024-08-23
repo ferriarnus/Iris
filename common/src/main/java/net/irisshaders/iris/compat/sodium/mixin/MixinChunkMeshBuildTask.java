@@ -1,16 +1,16 @@
 package net.irisshaders.iris.compat.sodium.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.caffeinemc.mods.sodium.client.render.chunk.compile.ChunkBuildBuffers;
-import net.caffeinemc.mods.sodium.client.render.chunk.compile.ChunkBuildContext;
-import net.caffeinemc.mods.sodium.client.render.chunk.compile.ChunkBuildOutput;
-import net.caffeinemc.mods.sodium.client.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
-import net.caffeinemc.mods.sodium.client.util.task.CancellationToken;
 import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
 import net.irisshaders.iris.vertices.BlockSensitiveBufferBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import org.embeddedt.embeddium.impl.render.chunk.compile.ChunkBuildBuffers;
+import org.embeddedt.embeddium.impl.render.chunk.compile.ChunkBuildContext;
+import org.embeddedt.embeddium.impl.render.chunk.compile.ChunkBuildOutput;
+import org.embeddedt.embeddium.impl.render.chunk.compile.tasks.ChunkBuilderMeshingTask;
+import org.embeddedt.embeddium.impl.util.task.CancellationToken;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -3,10 +3,6 @@ package net.irisshaders.iris.pipeline.programs;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.caffeinemc.mods.sodium.client.gl.shader.uniform.GlUniformFloat3v;
-import net.caffeinemc.mods.sodium.client.gl.shader.uniform.GlUniformMatrix4f;
-import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderInterface;
-import net.caffeinemc.mods.sodium.client.render.chunk.shader.ShaderBindingContext;
 import net.irisshaders.iris.gl.IrisRenderSystem;
 import net.irisshaders.iris.gl.blending.BlendModeOverride;
 import net.irisshaders.iris.gl.blending.BufferBlendOverride;
@@ -22,6 +18,10 @@ import net.irisshaders.iris.uniforms.builtin.BuiltinReplacementUniforms;
 import net.irisshaders.iris.uniforms.custom.CustomUniforms;
 import net.irisshaders.iris.vertices.ImmediateState;
 import net.minecraft.client.Minecraft;
+import org.embeddedt.embeddium.impl.gl.shader.uniform.GlUniformFloat3v;
+import org.embeddedt.embeddium.impl.gl.shader.uniform.GlUniformMatrix4f;
+import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderInterface;
+import org.embeddedt.embeddium.impl.render.chunk.shader.ShaderBindingContext;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class SodiumShader implements ChunkShaderInterface {
+public class SodiumShader extends ChunkShaderInterface {
 	private final GlUniformMatrix4f uniformModelViewMatrix;
 	private final GlUniformMatrix4f uniformModelViewMatrixInv;
 	private final GlUniformMatrix4f uniformProjectionMatrix;
@@ -49,16 +49,17 @@ public class SodiumShader implements ChunkShaderInterface {
 	private final boolean containsTessellation;
 
 	public SodiumShader(IrisRenderingPipeline pipeline, SodiumPrograms.Pass pass, ShaderBindingContext context,
-						int handle, Optional<BlendModeOverride> blendModeOverride,
-						List<BufferBlendOverride> bufferBlendOverrides,
-						CustomUniforms customUniforms, Supplier<ImmutableSet<Integer>> flipState, float alphaTest,
-						boolean containsTessellation) {
-		this.uniformModelViewMatrix = context.bindUniformOptional("iris_ModelViewMatrix", GlUniformMatrix4f::new);
-		this.uniformModelViewMatrixInv = context.bindUniformOptional("iris_ModelViewMatrixInverse", GlUniformMatrix4f::new);
-		this.uniformNormalMatrix = context.bindUniformOptional("iris_NormalMatrix", GlUniformMatrix3f::new);
-		this.uniformProjectionMatrix = context.bindUniformOptional("iris_ProjectionMatrix", GlUniformMatrix4f::new);
-		this.uniformProjectionMatrixInv = context.bindUniformOptional("iris_ProjectionMatrixInv", GlUniformMatrix4f::new);
-		this.uniformRegionOffset = context.bindUniformOptional("u_RegionOffset", GlUniformFloat3v::new);
+                        int handle, Optional<BlendModeOverride> blendModeOverride,
+                        List<BufferBlendOverride> bufferBlendOverrides,
+                        CustomUniforms customUniforms, Supplier<ImmutableSet<Integer>> flipState, float alphaTest,
+                        boolean containsTessellation) {
+		super(context, null);
+		this.uniformModelViewMatrix = context.bindUniform("iris_ModelViewMatrix", GlUniformMatrix4f::new);
+		this.uniformModelViewMatrixInv = context.bindUniform("iris_ModelViewMatrixInverse", GlUniformMatrix4f::new);
+		this.uniformNormalMatrix = context.bindUniform("iris_NormalMatrix", GlUniformMatrix3f::new);
+		this.uniformProjectionMatrix = context.bindUniform("iris_ProjectionMatrix", GlUniformMatrix4f::new);
+		this.uniformProjectionMatrixInv = context.bindUniform("iris_ProjectionMatrixInv", GlUniformMatrix4f::new);
+		this.uniformRegionOffset = context.bindUniform("u_RegionOffset", GlUniformFloat3v::new);
 
 		this.alphaTest = alphaTest;
 		this.containsTessellation = containsTessellation;
@@ -84,7 +85,7 @@ public class SodiumShader implements ChunkShaderInterface {
 	}
 
 	private ProgramSamplers buildSamplers(IrisRenderingPipeline pipeline, SodiumPrograms.Pass pass, int handle,
-										  boolean isShadowPass, Supplier<ImmutableSet<Integer>> flipState) {
+                                          boolean isShadowPass, Supplier<ImmutableSet<Integer>> flipState) {
 		ProgramSamplers.Builder builder = ProgramSamplers.builder(handle, IrisSamplers.SODIUM_RESERVED_TEXTURE_UNITS);
 		pipeline.addGbufferOrShadowSamplers(builder, ProgramImages.builder(handle),
 			flipState, isShadowPass, true, true, false);
@@ -92,7 +93,7 @@ public class SodiumShader implements ChunkShaderInterface {
 	}
 
 	private ProgramImages buildImages(IrisRenderingPipeline pipeline, SodiumPrograms.Pass pass, int handle,
-									  boolean isShadowPass, Supplier<ImmutableSet<Integer>> flipState) {
+                                      boolean isShadowPass, Supplier<ImmutableSet<Integer>> flipState) {
 		ProgramImages.Builder builder = ProgramImages.builder(handle);
 		pipeline.addGbufferOrShadowSamplers(ProgramSamplers.builder(handle, IrisSamplers.SODIUM_RESERVED_TEXTURE_UNITS),
 			builder, flipState, isShadowPass, true, true, false);

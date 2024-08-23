@@ -1,11 +1,11 @@
 package net.irisshaders.iris.compat.sodium.mixin;
 
-import net.caffeinemc.mods.sodium.client.gui.SodiumGameOptions;
-import net.caffeinemc.mods.sodium.client.render.chunk.RenderSectionManager;
-import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexType;
 import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
 import net.irisshaders.iris.vertices.sodium.terrain.IrisModelVertexFormats;
+import org.embeddedt.embeddium.impl.gui.EmbeddiumOptions;
+import org.embeddedt.embeddium.impl.render.chunk.RenderSectionManager;
+import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkVertexType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -31,7 +31,7 @@ public class MixinRenderSectionManager {
 		at = @At(value = "FIELD",
 			target = "Lnet/caffeinemc/mods/sodium/client/gui/SodiumGameOptions$PerformanceSettings;useFogOcclusion:Z",
 			remap = false))
-	private boolean iris$disableFogOcclusion(SodiumGameOptions.PerformanceSettings settings) {
+	private boolean iris$disableFogOcclusion(EmbeddiumOptions.PerformanceSettings settings) {
 		if (Iris.getCurrentPack().isPresent()) {
 			return false;
 		} else {

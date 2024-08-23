@@ -1,12 +1,12 @@
 package net.irisshaders.iris.vertices.sodium;
 
-import net.caffeinemc.mods.sodium.api.math.MatrixHelper;
-import net.caffeinemc.mods.sodium.api.vertex.attributes.common.ColorAttribute;
-import net.caffeinemc.mods.sodium.api.vertex.attributes.common.NormalAttribute;
-import net.caffeinemc.mods.sodium.api.vertex.attributes.common.PositionAttribute;
-import net.caffeinemc.mods.sodium.api.vertex.format.VertexFormatDescription;
-import net.caffeinemc.mods.sodium.api.vertex.format.VertexFormatRegistry;
 import net.irisshaders.iris.vertices.IrisVertexFormats;
+import org.embeddedt.embeddium.api.math.MatrixHelper;
+import org.embeddedt.embeddium.api.vertex.attributes.common.ColorAttribute;
+import org.embeddedt.embeddium.api.vertex.attributes.common.NormalAttribute;
+import org.embeddedt.embeddium.api.vertex.attributes.common.PositionAttribute;
+import org.embeddedt.embeddium.api.vertex.format.VertexFormatDescription;
+import org.embeddedt.embeddium.api.vertex.format.VertexFormatRegistry;
 import org.joml.Matrix4f;
 
 public final class CloudVertex {

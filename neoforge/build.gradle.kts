@@ -80,10 +80,10 @@ dependencies {
     }
 
     if (!rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "neoforge")).exists()) {
-        throw IllegalStateException("Sodium jar doesn't exist!!! It needs to be at $SODIUM_FILE")
+        //throw IllegalStateException("Sodium jar doesn't exist!!! It needs to be at $SODIUM_FILE")
     }
 
-    implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "neoforge"))))
+    //implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "neoforge"))))
 
     compileOnly(files(rootDir.resolve("DHApi.jar")))
 }

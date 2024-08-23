@@ -2,12 +2,12 @@ package net.irisshaders.iris.vertices.sodium;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import net.caffeinemc.mods.sodium.api.memory.MemoryIntrinsics;
-import net.caffeinemc.mods.sodium.api.vertex.serializer.VertexSerializer;
 import net.irisshaders.iris.uniforms.CapturedRenderingState;
 import net.irisshaders.iris.vertices.IrisVertexFormats;
 import net.irisshaders.iris.vertices.NormI8;
 import net.irisshaders.iris.vertices.NormalHelper;
+import org.embeddedt.embeddium.api.memory.MemoryIntrinsics;
+import org.embeddedt.embeddium.api.vertex.serializer.VertexSerializer;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 

@@ -36,6 +36,11 @@ tasks.configureEach {
     group = null
 }
 
+repositories {
+    maven { url = uri("https://maven.blamejared.com") }
+}
+
+
 dependencies {
     minecraft(group = "com.mojang", name = "minecraft", version = MINECRAFT_VERSION)
     mappings(loom.layered {
@@ -47,9 +52,11 @@ dependencies {
     modCompileOnly("io.github.douira:glsl-transformer:2.0.1")
     modCompileOnly("org.anarres:jcpp:1.4.14")
 
-    modCompileOnly(files(rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "fabric"))))
+    //modCompileOnly(files(rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "fabric"))))
 
     modCompileOnly(files(rootDir.resolve("DHApi.jar")))
+    modCompileOnly("org.embeddedt:embeddium-1.21:1.0.8-beta.338+mc1.21")
+
 }
 
 tasks.withType<AbstractRemapJarTask>().forEach {

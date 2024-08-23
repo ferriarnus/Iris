@@ -15,7 +15,6 @@ import io.github.douira.glsl_transformer.token_filter.TokenChannel;
 import io.github.douira.glsl_transformer.token_filter.TokenFilter;
 import io.github.douira.glsl_transformer.util.LRUCache;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexType;
 import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.gl.IrisLimits;
 import net.irisshaders.iris.gl.blending.AlphaTest;
@@ -44,6 +43,7 @@ import net.irisshaders.iris.shaderpack.texture.TextureStage;
 import org.antlr.v4.runtime.Token;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkVertexType;
 
 import java.util.EnumMap;
 import java.util.List;
