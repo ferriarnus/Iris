@@ -25,7 +25,7 @@ import java.util.SortedSet;
 public class MixinSodiumWorldRenderer {
 	@Redirect(method = "setupTerrain", remap = false,
 		at = @At(value = "INVOKE",
-			target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/RenderSectionManager;needsUpdate()Z",
+			target = "Lorg/embeddedt/embeddium/impl/render/chunk/RenderSectionManager;needsUpdate()Z",
 			remap = false))
 	private boolean iris$forceChunkGraphRebuildInShadowPass(RenderSectionManager instance) {
 		if (ShadowRenderingState.areShadowsCurrentlyBeingRendered()) {
@@ -45,7 +45,7 @@ public class MixinSodiumWorldRenderer {
 		ShadowRenderingState.setBlockEntityRenderFunction((shadowRenderer, bufferSource, modelView, camera, cameraX, cameraY, cameraZ, tickDelta, hasEntityFrustum, lightsOnly) -> {
 			renderLightsOnly = lightsOnly;
 
-			EmbeddiumWorldRenderer.instance().renderBlockEntities(modelView, bufferSource, ((LevelRendererAccessor) Minecraft.getInstance().levelRenderer).getDestructionProgress(), camera, tickDelta);
+			EmbeddiumWorldRenderer.instance().renderBlockEntities(modelView.last().pose(), bufferSource, ((LevelRendererAccessor) Minecraft.getInstance().levelRenderer).getDestructionProgress(), camera, tickDelta);
 
 			int finalBeList = beList;
 
