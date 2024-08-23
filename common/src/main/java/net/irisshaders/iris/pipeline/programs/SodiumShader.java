@@ -20,8 +20,12 @@ import net.irisshaders.iris.vertices.ImmediateState;
 import net.minecraft.client.Minecraft;
 import org.embeddedt.embeddium.impl.gl.shader.uniform.GlUniformFloat3v;
 import org.embeddedt.embeddium.impl.gl.shader.uniform.GlUniformMatrix4f;
+import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkFogMode;
 import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderInterface;
+import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderOptions;
 import org.embeddedt.embeddium.impl.render.chunk.shader.ShaderBindingContext;
+import org.embeddedt.embeddium.impl.render.chunk.terrain.TerrainRenderPass;
+import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkVertexType;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
@@ -33,12 +37,12 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class SodiumShader extends ChunkShaderInterface {
-	private final GlUniformMatrix4f uniformModelViewMatrix;
-	private final GlUniformMatrix4f uniformModelViewMatrixInv;
-	private final GlUniformMatrix4f uniformProjectionMatrix;
-	private final GlUniformMatrix4f uniformProjectionMatrixInv;
-	private final GlUniformMatrix3f uniformNormalMatrix;
-	private final GlUniformFloat3v uniformRegionOffset;
+	private  GlUniformMatrix4f uniformModelViewMatrix;
+	private  GlUniformMatrix4f uniformModelViewMatrixInv;
+	private  GlUniformMatrix4f uniformProjectionMatrix;
+	private  GlUniformMatrix4f uniformProjectionMatrixInv;
+	private  GlUniformMatrix3f uniformNormalMatrix;
+	private  GlUniformFloat3v uniformRegionOffset;
 	private final ProgramImages images;
 	private final ProgramSamplers samplers;
 	private final ProgramUniforms uniforms;
@@ -48,18 +52,45 @@ public class SodiumShader extends ChunkShaderInterface {
 	private final float alphaTest;
 	private final boolean containsTessellation;
 
+	public static final ChunkShaderOptions OPTS = new ChunkShaderOptions(ChunkFogMode.NONE, null, null);
+
 	public SodiumShader(IrisRenderingPipeline pipeline, SodiumPrograms.Pass pass, ShaderBindingContext context,
                         int handle, Optional<BlendModeOverride> blendModeOverride,
                         List<BufferBlendOverride> bufferBlendOverrides,
                         CustomUniforms customUniforms, Supplier<ImmutableSet<Integer>> flipState, float alphaTest,
                         boolean containsTessellation) {
-		super();
-		this.uniformModelViewMatrix = context.bindUniform("iris_ModelViewMatrix", GlUniformMatrix4f::new); //Iris uses bindUniformOptional
-		this.uniformModelViewMatrixInv = context.bindUniform("iris_ModelViewMatrixInverse", GlUniformMatrix4f::new);
-		this.uniformNormalMatrix = context.bindUniform("iris_NormalMatrix", GlUniformMatrix3f::new);
-		this.uniformProjectionMatrix = context.bindUniform("iris_ProjectionMatrix", GlUniformMatrix4f::new);
-		this.uniformProjectionMatrixInv = context.bindUniform("iris_ProjectionMatrixInv", GlUniformMatrix4f::new);
-		this.uniformRegionOffset = context.bindUniform("u_RegionOffset", GlUniformFloat3v::new);
+		super(context, OPTS);
+		try {
+			this.uniformModelViewMatrix = context.bindUniform("iris_ModelViewMatrix", GlUniformMatrix4f::new); //Iris uses bindUniformOptional
+		} catch (Exception e) {
+			this.uniformModelViewMatrix = null;
+		}
+		try {
+			this.uniformModelViewMatrixInv = context.bindUniform("iris_ModelViewMatrixInverse", GlUniformMatrix4f::new);
+		} catch (Exception e) {
+			this.uniformModelViewMatrixInv = null;
+		}
+		try {
+			this.uniformNormalMatrix = context.bindUniform("iris_NormalMatrix", GlUniformMatrix3f::new);
+		} catch (Exception e) {
+			this.uniformNormalMatrix = null;
+		}
+		try {
+			this.uniformProjectionMatrix = context.bindUniform("iris_ProjectionMatrix", GlUniformMatrix4f::new);
+		} catch (Exception e) {
+			this.uniformProjectionMatrix = null;
+		}
+		try {
+			this.uniformProjectionMatrixInv = context.bindUniform("iris_ProjectionMatrixInv", GlUniformMatrix4f::new);
+		} catch (Exception e) {
+			this.uniformProjectionMatrixInv = null;
+		}
+		try {
+			this.uniformRegionOffset = context.bindUniform("u_RegionOffset", GlUniformFloat3v::new);
+		} catch (Exception e) {
+			this.uniformRegionOffset = null;
+		}
+
 
 		this.alphaTest = alphaTest;
 		this.containsTessellation = containsTessellation;
@@ -170,7 +201,7 @@ public class SodiumShader extends ChunkShaderInterface {
 		customUniforms.push(this);
 	}
 
-	@Override
+	//@Override
 	public void resetState() {
 		ProgramUniforms.clearActiveUniforms();
 		ProgramSamplers.clearActiveSamplers();

@@ -12,6 +12,7 @@ import io.github.douira.glsl_transformer.ast.transform.ASTParser;
 import io.github.douira.glsl_transformer.util.Type;
 import net.irisshaders.iris.gl.shader.ShaderType;
 import net.irisshaders.iris.pipeline.transform.parameter.SodiumParameters;
+import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
 
 import static net.irisshaders.iris.pipeline.transform.transformer.CommonTransformer.addIfNotExists;
 
@@ -111,53 +112,25 @@ public class SodiumTransformer {
 		TranslationUnit tree,
 		Root root,
 		SodiumParameters parameters) {
-		tree.parseAndInjectNodes(t, ASTInjectionPoint.BEFORE_DECLARATIONS,
+		String separateAo = WorldRenderingSettings.INSTANCE.shouldUseSeparateAo() ? "a_Color" : "vec4(a_Color.rgb * a_Color.a, 1.0)";
+		tree.parseAndInjectNodes(t, ASTInjectionPoint.BEFORE_FUNCTIONS,
 			// translated from sodium's chunk_vertex.glsl
 			"vec3 _vert_position;",
 			"vec2 _vert_tex_diffuse_coord;",
-			"vec2 _vert_tex_light_coord;",
+			"ivec2 _vert_tex_light_coord;",
 			"vec4 _vert_color;",
-			"const uint POSITION_BITS        = 20u;",
-			"const uint POSITION_MAX_COORD   = 1u << POSITION_BITS;",
-			"const uint POSITION_MAX_VALUE   = POSITION_MAX_COORD - 1u;",
-
-			"const uint TEXTURE_BITS         = 15u;",
-			"const uint TEXTURE_MAX_COORD    = 1u << TEXTURE_BITS;",
-			"const uint TEXTURE_MAX_VALUE    = TEXTURE_MAX_COORD - 1u;",
-
-			"const float VERTEX_SCALE = 32.0 / POSITION_MAX_COORD;",
-			"const float VERTEX_OFFSET = -8.0;",
-			"const float TEXTURE_FUZZ_AMOUNT = 1.0 / 64.0;",
-			"const float TEXTURE_GROW_FACTOR = (1.0 - TEXTURE_FUZZ_AMOUNT) / TEXTURE_MAX_COORD;",
 			"uint _draw_id;",
 			"const uint MATERIAL_USE_MIP_OFFSET = 0u;",
-			"""
-					uvec3 _deinterleave_u20x3(uint packed_hi, uint packed_lo) {
-					     uvec3 hi = (uvec3(packed_hi) >> uvec3(0u, 10u, 20u)) & 0x3FFu;
-					     uvec3 lo = (uvec3(packed_lo) >> uvec3(0u, 10u, 20u)) & 0x3FFu;
-
-					     return (hi << 10u) | lo;
-					 }
-				\t""",
-			"""
-					vec2 _get_texcoord() {
-					     return vec2(a_TexCoord & TEXTURE_MAX_VALUE) / float(TEXTURE_MAX_COORD);
-					 }
-				""",
-			"""
-					vec2 _get_texcoord_bias() {
-					     return mix(vec2(-TEXTURE_GROW_FACTOR), vec2(TEXTURE_GROW_FACTOR), bvec2(a_TexCoord >> TEXTURE_BITS));
-					 }
-				""",
 			"float _material_mip_bias(uint material) {\n" +
 				"    return ((material >> MATERIAL_USE_MIP_OFFSET) & 1u) != 0u ? 0.0f : -4.0f;\n" +
 				"}",
 			"void _vert_init() {" +
-				"_vert_position = ((_deinterleave_u20x3(a_PositionHi, a_PositionLo) * VERTEX_SCALE) + VERTEX_OFFSET);" +
-				"_vert_tex_diffuse_coord = _get_texcoord() + _get_texcoord_bias();" +
-				"_vert_tex_light_coord = vec2(a_LightAndData.xy);" +
-				"_vert_color = a_Color;" +
-				"_draw_id = a_LightAndData[3]; }",
+				"_vert_position = (vec3(a_PosId.xyz) * 0.00048828125 + -8.0"
+				+ ");" +
+				"_vert_tex_diffuse_coord = (a_TexCoord * " + (1.0f / 32768.0f) + ");" +
+				"_vert_tex_light_coord = a_LightCoord;" +
+				"_vert_color = " + separateAo + ";" +
+				"_draw_id = (a_PosId.w >> 8u) & 0xFFu; }",
 
 			"uvec3 _get_relative_chunk_coord(uint pos) {\n" +
 				"    // Packing scheme is defined by LocalSectionIndex\n" +
@@ -166,11 +139,10 @@ public class SodiumTransformer {
 			"vec3 _get_draw_translation(uint pos) {\n" +
 				"    return _get_relative_chunk_coord(pos) * vec3(16.0f);\n" +
 				"}\n");
-		addIfNotExists(root, t, tree, "a_PositionHi", Type.UINT32, StorageQualifier.StorageType.IN);
-		addIfNotExists(root, t, tree, "a_PositionLo", Type.UINT32, StorageQualifier.StorageType.IN);
-		addIfNotExists(root, t, tree, "a_TexCoord", Type.U32VEC2, StorageQualifier.StorageType.IN);
+		addIfNotExists(root, t, tree, "a_PosId", Type.U32VEC4, StorageQualifier.StorageType.IN);
+		addIfNotExists(root, t, tree, "a_TexCoord", Type.F32VEC2, StorageQualifier.StorageType.IN);
 		addIfNotExists(root, t, tree, "a_Color", Type.F32VEC4, StorageQualifier.StorageType.IN);
-		addIfNotExists(root, t, tree, "a_LightAndData", Type.U32VEC4, StorageQualifier.StorageType.IN);
+		addIfNotExists(root, t, tree, "a_LightCoord", Type.I32VEC2, StorageQualifier.StorageType.IN);
 		tree.prependMainFunctionBody(t, "_vert_init();");
 	}
 

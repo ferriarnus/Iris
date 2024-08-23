@@ -24,7 +24,9 @@
 
     "ChunkMeshAttributeAccessor",
     "MixinChunkMeshAttribute",
-    "MixinVertexSerializerCache"
+    "MixinVertexSerializerCache",
+    "MixinChunkShaderInterface",
+    "MixinGlVertexFormatbuilder"
   ],
   "injectors": {
     "defaultRequire": 1
