@@ -3,7 +3,6 @@ package net.irisshaders.iris.vertices.sodium.terrain;
 
 import org.embeddedt.embeddium.impl.gl.attribute.GlVertexAttributeFormat;
 import org.embeddedt.embeddium.impl.gl.attribute.GlVertexFormat;
-import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderBindingPoints;
 import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkMeshAttribute;
 import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkVertexEncoder;
 import org.embeddedt.embeddium.impl.render.chunk.vertex.format.ChunkVertexType;
@@ -58,7 +57,7 @@ public class XHFPModelVertexType implements ChunkVertexType {
 	}
 
 	@Override
-	public GlVertexFormat getVertexFormat() {
+	public GlVertexFormat<ChunkMeshAttribute> getVertexFormat() {
 		return VERTEX_FORMAT;
 	}
 

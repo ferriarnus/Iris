@@ -39,6 +39,10 @@ tasks.jar {
     manifest.attributes["Main-Class"] = "net.irisshaders.iris.LaunchWarn"
 }
 
+repositories {
+    maven { url = uri("https://maven.blamejared.com") }
+}
+
 neoForge {
     // Specify the version of NeoForge to use.
     version = NEOFORGE_VERSION
@@ -84,6 +88,8 @@ dependencies {
     }
 
     //implementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "neoforge"))))
+    implementation("org.embeddedt:embeddium-1.21:1.0.8-beta.338+mc1.21")
+
 
     compileOnly(files(rootDir.resolve("DHApi.jar")))
 }

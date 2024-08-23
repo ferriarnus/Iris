@@ -53,7 +53,7 @@ public class SodiumShader extends ChunkShaderInterface {
                         List<BufferBlendOverride> bufferBlendOverrides,
                         CustomUniforms customUniforms, Supplier<ImmutableSet<Integer>> flipState, float alphaTest,
                         boolean containsTessellation) {
-		super(context, null);
+		super();
 		this.uniformModelViewMatrix = context.bindUniform("iris_ModelViewMatrix", GlUniformMatrix4f::new);
 		this.uniformModelViewMatrixInv = context.bindUniform("iris_ModelViewMatrixInverse", GlUniformMatrix4f::new);
 		this.uniformNormalMatrix = context.bindUniform("iris_NormalMatrix", GlUniformMatrix3f::new);

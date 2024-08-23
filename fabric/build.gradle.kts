@@ -22,6 +22,10 @@ sourceSets {
     }
 }
 
+repositories {
+    maven { url = uri("https://maven.blamejared.com") }
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${MINECRAFT_VERSION}")
     mappings(loom.layered {
@@ -53,6 +57,7 @@ dependencies {
     include("org.anarres:jcpp:1.4.14")
 
     //modImplementation(files(rootDir.resolve("custom_sodium").resolve(SODIUM_FILE.replace("LOADER", "fabric"))))
+    modCompileOnly("org.embeddedt:embeddium-1.21:1.0.8-beta.338+mc1.21")
 
     modCompileOnly(files(rootDir.resolve("DHApi.jar")))
 

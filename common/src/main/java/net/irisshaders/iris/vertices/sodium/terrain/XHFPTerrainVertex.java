@@ -19,6 +19,10 @@ public class XHFPTerrainVertex implements ChunkVertexEncoder, VertexEncoderInter
 	private final Vector3f normal = new Vector3f();
 	private BlockContextHolder contextHolder;
 
+	int index = 0;
+	Vertex[] vertices = new Vertex[4];
+
+
 	private static int packPositionHi(int x, int y, int z) {
 		return (x >>> 10 & 1023) << 0 | (y >>> 10 & 1023) << 10 | (z >>> 10 & 1023) << 20;
 	}
@@ -77,7 +81,7 @@ public class XHFPTerrainVertex implements ChunkVertexEncoder, VertexEncoderInter
 		this.contextHolder = holder;
 	}
 
-	@Override
+	//@Override
 	public long write(long ptr,
 					  Material material, Vertex[] vertices, int section) {
 		// Calculate the center point of the texture region which is mapped to the quad
@@ -124,7 +128,8 @@ public class XHFPTerrainVertex implements ChunkVertexEncoder, VertexEncoderInter
 
 			MemoryUtil.memPutInt(ptr, packPositionHi(x, y, z));
 			MemoryUtil.memPutInt(ptr + 4L, packPositionLo(x, y, z));
-			MemoryUtil.memPutInt(ptr + 8L, WorldRenderingSettings.INSTANCE.shouldUseSeparateAo() ? ColorABGR.withAlpha(vertex.color, vertex.ao) : ColorHelper.multiplyRGB(vertex.color, vertex.ao));
+			//MemoryUtil.memPutInt(ptr + 8L, WorldRenderingSettings.INSTANCE.shouldUseSeparateAo() ? ColorABGR.withAlpha(vertex.color, vertex.ao) : ColorHelper.multiplyRGB(vertex.color, vertex.ao));
+			MemoryUtil.memPutInt(ptr + 8L, vertex.color);
 			MemoryUtil.memPutInt(ptr + 12L, packTexture(u, v));
 			MemoryUtil.memPutInt(ptr + 16L, packLightAndData(light, material.bits(), section));
 
@@ -145,6 +150,12 @@ public class XHFPTerrainVertex implements ChunkVertexEncoder, VertexEncoderInter
 
 	@Override
 	public long write(long ptr, Material material, Vertex vertex, int sectionIndex) {
-		return 0;
+		vertices[index] = vertex;
+		if (index == 4) {
+			ptr = write(ptr, material, vertices, sectionIndex);
+			index = 0;
+		}
+		index++;
+		return ptr;
 	}
 }

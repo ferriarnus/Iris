@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.embeddedt.embeddium.impl.gl.GlObject;
 import org.embeddedt.embeddium.impl.gl.shader.GlProgram;
 import org.embeddedt.embeddium.impl.gl.shader.GlShader;
+import org.embeddedt.embeddium.impl.gl.shader.ShaderType;
 import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderBindingPoints;
 import org.embeddedt.embeddium.impl.render.chunk.shader.ChunkShaderInterface;
 import org.embeddedt.embeddium.impl.render.chunk.terrain.DefaultTerrainRenderPasses;
@@ -86,10 +87,25 @@ public class SodiumPrograms {
 		Map<PatchShaderType, GlShader> newMap = new EnumMap<>(PatchShaderType.class);
 		for (Map.Entry<PatchShaderType, String> entry : transformed.entrySet()) {
 			if (entry.getValue() == null) continue;
-			newMap.put(entry.getKey(), new GlShader(ShaderType.fromGlShaderType(entry.getKey().glShaderType.id),
+			newMap.put(entry.getKey(), new GlShader(fromGlShaderType(entry.getKey().glShaderType),
 				ResourceLocation.fromNamespaceAndPath("iris", "sodium-shader-" + passName), entry.getValue()));
 		}
 		return newMap;
+	}
+
+	ShaderType fromGlShaderType(net.irisshaders.iris.gl.shader.ShaderType type) {
+		switch (type) {
+			case VERTEX:
+				return ShaderType.VERTEX;
+			case GEOMETRY:
+				return ShaderType.GEOM;
+			case FRAGMENT:
+				return ShaderType.FRAGMENT;
+			case TESSELATION_CONTROL:
+				return ShaderType.TESS_CTRL;
+			default:
+				return ShaderType.TESS_EVALUATE;
+		}
 	}
 
 	private Supplier<ImmutableSet<Integer>> getFlipState(IrisRenderingPipeline pipeline, Pass pass, boolean isShadowPass) {

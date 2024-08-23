@@ -9,7 +9,7 @@
     "entity.MixinCommonVertexAttribute",
     "MixinChunkBuildBuffers",
     "MixinChunkMeshBuildTask",
-    "MixinCloudRenderer",
+    //"MixinCloudRenderer",
     "MixinChunkMeshBufferBuilder",
     "MixinDefaultChunkRenderer",
     "MixinGlRenderDevice",
@@ -17,9 +17,9 @@
     "MixinRenderSectionManager",
     "MixinRenderSectionManagerShadow",
     "MixinShaderChunkRenderer",
-    "MixinSodiumGameOptionPages",
-    "MixinSodiumGameOptions",
-    "MixinSodiumOptionsGUI",
+    //"MixinSodiumGameOptionPages",
+    //"MixinSodiumGameOptions",
+    //"MixinSodiumOptionsGUI",
     "MixinSodiumWorldRenderer"
   ],
   "injectors": {
