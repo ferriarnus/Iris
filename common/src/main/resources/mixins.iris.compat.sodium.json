@@ -20,7 +20,11 @@
     //"MixinSodiumGameOptionPages",
     //"MixinSodiumGameOptions",
     //"MixinSodiumOptionsGUI",
-    "MixinSodiumWorldRenderer"
+    "MixinSodiumWorldRenderer",
+
+    "ChunkMeshAttributeAccessor",
+    "MixinChunkMeshAttribute",
+    "MixinVertexSerializerCache"
   ],
   "injectors": {
     "defaultRequire": 1
