@@ -54,6 +54,12 @@ public class ExternallyManagedUniforms {
 		uniformHolder.externallyManagedUniform("iris_LineWidth", UniformType.FLOAT);
 		uniformHolder.externallyManagedUniform("iris_ScreenSize", UniformType.VEC2);
 		uniformHolder.externallyManagedUniform("iris_FogColor", UniformType.VEC4);
+
+		//mek
+		uniformHolder.externallyManagedUniform("Light0_Direction", UniformType.FLOAT);
+		uniformHolder.externallyManagedUniform("Light1_Direction", UniformType.FLOAT);
+		uniformHolder.externallyManagedUniform("ColorModulator", UniformType.VEC4);
+
 	}
 
 	private static void addMat3(UniformHolder uniformHolder, String name) {

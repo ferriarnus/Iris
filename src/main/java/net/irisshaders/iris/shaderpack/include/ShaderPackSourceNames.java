@@ -61,7 +61,7 @@ public class ShaderPackSourceNames {
 			}
 		}
 
-		for (ProgramId programId : ProgramId.values()) {
+		for (ProgramId programId : ProgramId.getValues()) {
 			if (programId == ProgramId.Final || programId == ProgramId.Shadow) {
 				addComputeStarts(potentialFileNames, programId.getSourceName());
 			} else {

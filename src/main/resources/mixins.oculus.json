@@ -90,7 +90,8 @@
     "texture.TextureAtlasAccessor",
     "texture.pbr.MixinDirectoryLister",
     "texture.pbr.MixinSpriteContents",
-    "texture.pbr.MixinTextureAtlas"
+    "texture.pbr.MixinTextureAtlas",
+    "MixinRenderMekasuit"
   ],
   "injectors": {
     "defaultRequire": 1,

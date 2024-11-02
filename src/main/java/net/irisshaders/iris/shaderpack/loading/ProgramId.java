@@ -1,81 +1,83 @@
 package net.irisshaders.iris.shaderpack.loading;
 
+import net.irisshaders.MekShaders;
 import net.irisshaders.iris.gl.blending.BlendMode;
 import net.irisshaders.iris.gl.blending.BlendModeFunction;
 import net.irisshaders.iris.gl.blending.BlendModeOverride;
+import net.irisshaders.iris.shaderpack.programs.ProgramSet;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public enum ProgramId {
-	Shadow(ProgramGroup.Shadow, ""),
-	ShadowSolid(ProgramGroup.Shadow, "solid", Shadow),
-	ShadowCutout(ProgramGroup.Shadow, "cutout", Shadow),
+public record ProgramId(ProgramGroup group, String name, ProgramId fallback, BlendModeOverride defaultBlendOverride, ProgramSourceLocator locator) {
+	private static final List<ProgramId> VALUES = new ArrayList<>();
 
-	Basic(ProgramGroup.Gbuffers, "basic"),
-	Line(ProgramGroup.Gbuffers, "line", Basic),
+	public static ProgramId Shadow = register(ProgramGroup.Shadow, "", ProgramSet::getShadow);
+	public static ProgramId ShadowSolid = register(ProgramGroup.Shadow, "solid", Shadow, ProgramSourceLocator.EMPTY);
+	public static ProgramId ShadowCutout = register(ProgramGroup.Shadow, "cutout", Shadow, ProgramSourceLocator.EMPTY);
 
-	Textured(ProgramGroup.Gbuffers, "textured", Basic),
-	TexturedLit(ProgramGroup.Gbuffers, "textured_lit", Textured),
-	SkyBasic(ProgramGroup.Gbuffers, "skybasic", Basic),
-	SkyTextured(ProgramGroup.Gbuffers, "skytextured", Textured),
-	Clouds(ProgramGroup.Gbuffers, "clouds", Textured),
+	public static ProgramId Basic = register(ProgramGroup.Gbuffers, "basic", ProgramSet::getGbuffersBasic);
+	public static ProgramId Line = register(ProgramGroup.Gbuffers, "line", Basic, set -> set.gbuffersLine.requireValid());
 
-	Terrain(ProgramGroup.Gbuffers, "terrain", TexturedLit),
-	TerrainSolid(ProgramGroup.Gbuffers, "terrain_solid", Terrain),
-	TerrainCutout(ProgramGroup.Gbuffers, "terrain_cutout", Terrain),
-	DamagedBlock(ProgramGroup.Gbuffers, "damagedblock", Terrain),
+	public static ProgramId Textured = register(ProgramGroup.Gbuffers, "textured", Basic, ProgramSet::getGbuffersTextured);
+	public static ProgramId TexturedLit = register(ProgramGroup.Gbuffers, "textured_lit", Textured, ProgramSet::getGbuffersTexturedLit);
+	public static ProgramId SkyBasic = register(ProgramGroup.Gbuffers, "skybasic", Basic, ProgramSet::getGbuffersSkyBasic);
+	public static ProgramId SkyTextured = register(ProgramGroup.Gbuffers, "skytextured", Textured, ProgramSet::getGbuffersSkyTextured);
+	public static ProgramId Clouds = register(ProgramGroup.Gbuffers, "clouds", Textured, ProgramSet::getGbuffersClouds);
 
-	Block(ProgramGroup.Gbuffers, "block", Terrain),
-	BlockTrans(ProgramGroup.Gbuffers, "block_translucent", Block),
-	BeaconBeam(ProgramGroup.Gbuffers, "beaconbeam", Textured),
-	Item(ProgramGroup.Gbuffers, "item", TexturedLit),
+	public static ProgramId Terrain = register(ProgramGroup.Gbuffers, "terrain", TexturedLit, ProgramSet::getGbuffersTerrain);
+	public static ProgramId TerrainSolid = register(ProgramGroup.Gbuffers, "terrain_solid", Terrain, ProgramSet::getGbuffersTerrainSolid);
+	public static ProgramId TerrainCutout = register(ProgramGroup.Gbuffers, "terrain_cutout", Terrain, ProgramSet::getGbuffersTerrainCutout);
+	public static ProgramId DamagedBlock = register(ProgramGroup.Gbuffers, "damagedblock", Terrain, ProgramSet::getGbuffersDamagedBlock);
 
-	Entities(ProgramGroup.Gbuffers, "entities", TexturedLit),
-	EntitiesTrans(ProgramGroup.Gbuffers, "entities_translucent", Entities),
-	Particles(ProgramGroup.Gbuffers, "particles", TexturedLit),
-	ParticlesTrans(ProgramGroup.Gbuffers, "particles_translucent", Particles),
-	EntitiesGlowing(ProgramGroup.Gbuffers, "entities_glowing", Entities),
-	ArmorGlint(ProgramGroup.Gbuffers, "armor_glint", Textured),
-	SpiderEyes(ProgramGroup.Gbuffers, "spidereyes", Textured,
-		new BlendModeOverride(new BlendMode(BlendModeFunction.SRC_ALPHA.getGlId(), BlendModeFunction.ONE.getGlId(), BlendModeFunction.ZERO.getGlId(), BlendModeFunction.ONE.getGlId()))),
+	public static ProgramId Block = register(ProgramGroup.Gbuffers, "block", Terrain, ProgramSet::getGbuffersBlock);
+	public static ProgramId BlockTrans = register(ProgramGroup.Gbuffers, "block_translucent", Block, ProgramSet::getGbuffersBlockTrans);
+	public static ProgramId BeaconBeam = register(ProgramGroup.Gbuffers, "beaconbeam", Textured, ProgramSet::getGbuffersBeaconBeam);
+	public static ProgramId Item = register(ProgramGroup.Gbuffers, "item", TexturedLit, ProgramSourceLocator.EMPTY);
 
-	Hand(ProgramGroup.Gbuffers, "hand", TexturedLit),
-	Weather(ProgramGroup.Gbuffers, "weather", TexturedLit),
-	Water(ProgramGroup.Gbuffers, "water", Terrain),
-	HandWater(ProgramGroup.Gbuffers, "hand_water", Hand),
-	DhTerrain(ProgramGroup.Dh, "terrain"),
-	DhGeneric(ProgramGroup.Dh, "generic", DhTerrain),
-	DhWater(ProgramGroup.Dh, "water", DhTerrain),
-	DhShadow(ProgramGroup.Dh, "shadow"),
+	public static ProgramId Entities = register(ProgramGroup.Gbuffers, "entities", TexturedLit, ProgramSet::getGbuffersEntities);
+	public static ProgramId EntitiesTrans = register(ProgramGroup.Gbuffers, "entities_translucent", Entities, ProgramSet::getGbuffersEntitiesTrans);
+	public static ProgramId Particles = register(ProgramGroup.Gbuffers, "particles", TexturedLit, ProgramSet::getGbuffersParticles);
+	public static ProgramId ParticlesTrans = register(ProgramGroup.Gbuffers, "particles_translucent", Particles, ProgramSet::getGbuffersParticlesTrans);
+	public static ProgramId EntitiesGlowing = register(ProgramGroup.Gbuffers, "entities_glowing", Entities, ProgramSet::getGbuffersEntitiesGlowing);
+	public static ProgramId ArmorGlint = register(ProgramGroup.Gbuffers, "armor_glint", Textured, ProgramSet::getGbuffersGlint);
+	public static ProgramId SpiderEyes = register(ProgramGroup.Gbuffers, "spidereyes", Textured,
+		new BlendModeOverride(new BlendMode(BlendModeFunction.SRC_ALPHA.getGlId(), BlendModeFunction.ONE.getGlId(), BlendModeFunction.ZERO.getGlId(), BlendModeFunction.ONE.getGlId()))
+			, ProgramSet::getGbuffersEntityEyes);
 
-	Final(ProgramGroup.Final, ""),
-	;
+	public static ProgramId Hand = register(ProgramGroup.Gbuffers, "hand", TexturedLit, ProgramSet::getGbuffersHand);
+	public static ProgramId Weather = register(ProgramGroup.Gbuffers, "weather", TexturedLit, ProgramSet::getGbuffersWeather);
+	public static ProgramId Water = register(ProgramGroup.Gbuffers, "water", Terrain, ProgramSet::getGbuffersWater);
+	public static ProgramId HandWater = register(ProgramGroup.Gbuffers, "hand_water", Hand, ProgramSet::getGbuffersHandWater);
+	public static ProgramId DhTerrain = register(ProgramGroup.Dh, "terrain", TexturedLit, ProgramSet::getDhTerrain);
+	public static ProgramId DhGeneric = register(ProgramGroup.Dh, "generic", DhTerrain, ProgramSourceLocator.EMPTY);
+	public static ProgramId DhWater = register(ProgramGroup.Dh, "water", DhTerrain,ProgramSet::getDhWater);
+	public static ProgramId DhShadow = register(ProgramGroup.Dh, "shadow", ProgramSet::getDhShadow);
 
-	private final ProgramGroup group;
-	private final String sourceName;
-	private final ProgramId fallback;
-	private final BlendModeOverride defaultBlendOverride;
+	public static ProgramId Final = register(ProgramGroup.Final, "", ProgramSet::getCompositeFinal);
 
-	ProgramId(ProgramGroup group, String name) {
-		this.group = group;
-		this.sourceName = name.isEmpty() ? group.getBaseName() : group.getBaseName() + "_" + name;
-		this.fallback = null;
-		this.defaultBlendOverride = null;
+	static {
+		MekShaders.init();
 	}
 
-	ProgramId(ProgramGroup group, String name, ProgramId fallback) {
-		this.group = group;
-		this.sourceName = name.isEmpty() ? group.getBaseName() : group.getBaseName() + "_" + name;
-		this.fallback = Objects.requireNonNull(fallback);
-		this.defaultBlendOverride = null;
+	public static ProgramId register(ProgramGroup group, String name, ProgramSourceLocator locator) {
+		return register(group, name, null, null, locator);
 	}
 
-	ProgramId(ProgramGroup group, String name, ProgramId fallback, BlendModeOverride defaultBlendOverride) {
-		this.group = group;
-		this.sourceName = name.isEmpty() ? group.getBaseName() : group.getBaseName() + "_" + name;
-		this.fallback = Objects.requireNonNull(fallback);
-		this.defaultBlendOverride = defaultBlendOverride;
+	public static ProgramId register(ProgramGroup group, String name, ProgramId fallback, ProgramSourceLocator locator) {
+		return register(group, name, fallback, null, locator);
+	}
+
+	public static ProgramId register(ProgramGroup group, String name, ProgramId fallback, BlendModeOverride defaultBlendOverride, ProgramSourceLocator locator) {
+		ProgramId id = new ProgramId(group, name, fallback, defaultBlendOverride, locator);
+		VALUES.add(id);
+		return id;
+	}
+
+	public static List<ProgramId> getValues() {
+		return VALUES;
 	}
 
 	public ProgramGroup getGroup() {
@@ -83,7 +85,7 @@ public enum ProgramId {
 	}
 
 	public String getSourceName() {
-		return sourceName;
+		return name.isEmpty() ? group.getBaseName() : group.getBaseName() + "_" + name;
 	}
 
 	public Optional<ProgramId> getFallback() {

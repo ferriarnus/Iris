@@ -92,7 +92,11 @@ public class ShaderCreator {
 			        { "name": "iris_GlintAlpha", "type": "float", "count": 1, "values": [ 1.0 ] },
 			        { "name": "iris_FogStart", "type": "float", "count": 1, "values": [ 0.0 ] },
 			        { "name": "iris_FogEnd", "type": "float", "count": 1, "values": [ 1.0 ] },
-			        { "name": "iris_FogColor", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] }
+			        { "name": "iris_FogColor", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
+
+			        { "name": "Light0_Direction", "type": "float", "count": 3, "values": [0.0, 0.0, 0.0] },
+				    { "name": "Light1_Direction", "type": "float", "count": 3, "values": [0.0, 0.0, 0.0] },
+				    { "name": "ColorModulator", "type": "float", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] }
 			    ]
 			}""", name, name);
 

@@ -2,6 +2,8 @@ package net.irisshaders.iris.pipeline.programs;
 
 import net.minecraft.client.renderer.ShaderInstance;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -10,19 +12,19 @@ import java.util.function.Function;
  * fulfilling the same function.
  */
 public class ShaderMap {
-	private final ShaderInstance[] shaders;
+	private final List<ShaderInstance> shaders;
 
 	public ShaderMap(Function<ShaderKey, ShaderInstance> factory) {
-		ShaderKey[] ids = ShaderKey.values();
+		List<ShaderKey> ids = ShaderKey.getAll();
 
-		this.shaders = new ShaderInstance[ids.length];
+		this.shaders = new ArrayList<>();
 
-		for (int i = 0; i < ids.length; i++) {
-			this.shaders[i] = factory.apply(ids[i]);
-		}
+        for (ShaderKey id : ids) {
+            this.shaders.add(factory.apply(id));
+        }
 	}
 
 	public ShaderInstance getShader(ShaderKey id) {
-		return shaders[id.ordinal()];
+		return shaders.get(ShaderKey.getAll().indexOf(id));
 	}
 }

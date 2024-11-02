@@ -111,6 +111,7 @@ dependencies {
 
 	modImplementation "org.embeddedt:embeddium-${minecraft_version}:${embeddium_version}"
 	modCompileOnly("maven.modrinth:distanthorizonsapi:3.0.0")
+	modImplementation("curse.maven:mekanism-268560:5662583")
 
 	forgeRuntimeLibrary(implementation(shadow(project(path: ":glsl-relocated", configuration: "bundledJar")))) {
 		transitive = false
