@@ -1,8 +1,9 @@
-#version 150
+#version 120
 
-uniform sampler2D Sampler0;
+uniform sampler2D texture;
+uniform sampler2D lightmap;
 
-uniform vec4 ColorModulator;
+//uniform vec4 ColorModulator;
 uniform float FogStart;
 uniform float FogEnd;
 uniform vec4 FogColor;
@@ -10,8 +11,7 @@ uniform vec4 FogColor;
 in float vertexDistance;
 in vec4 vertexColor;
 in vec4 shadedVertexColor;
-in vec4 lightMapColor;
-in vec4 overlayColor1;
+in vec2 lmcoord;
 in vec2 texCoord0;
 in vec4 normal;
 
@@ -37,7 +37,7 @@ vec4 linear_fog(vec4 inColor, float vertexDistance, float fogStart, float fogEnd
 }
 
 void main() {
-vec4 color = texture(Sampler0, texCoord0);
+vec4 color = texture(texture, texCoord0);
 if (color.a < 0.5) {
 discard;
 }
@@ -47,7 +47,7 @@ color *= shadedVertexColor * ColorModulator;
 color *= vertexColor * ColorModulator;
 }
 //color.rgb = mix(overlayColor1.rgb, color.rgb, overlayColor1.a);
-color *= lightMapColor;
+color *= texture(lightmap, lmcoord);
 fragColor = color;
 //fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
 }

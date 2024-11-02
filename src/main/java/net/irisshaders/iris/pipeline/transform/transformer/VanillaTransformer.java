@@ -62,6 +62,9 @@ public class VanillaTransformer {
 		tree.parseAndInjectNode(t, ASTInjectionPoint.BEFORE_DECLARATIONS,
 			"uniform vec4 iris_ColorModulator;");
 
+		//TODO none of these replacements at the bottom seem possible, gl_Color will always be replaced before
+		root.rename("ColorModulator", "iris_ColorModulator");
+
 		if (parameters.inputs.hasColor() && parameters.type == PatchShaderType.VERTEX) {
 			// TODO: Handle the fragment / geometry shader here
 			if (parameters.alpha == AlphaTests.VERTEX_ALPHA) {
