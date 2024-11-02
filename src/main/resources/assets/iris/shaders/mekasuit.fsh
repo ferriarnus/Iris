@@ -4,9 +4,9 @@ uniform sampler2D texture;
 uniform sampler2D lightmap;
 
 //uniform vec4 ColorModulator;
-uniform float FogStart;
-uniform float FogEnd;
-uniform vec4 FogColor;
+//uniform float FogStart;
+//uniform float FogEnd;
+//uniform vec4 FogColor;
 
 in float vertexDistance;
 in vec4 vertexColor;
@@ -48,6 +48,5 @@ color *= vertexColor * ColorModulator;
 }
 //color.rgb = mix(overlayColor1.rgb, color.rgb, overlayColor1.a);
 color *= texture(lightmap, lmcoord);
-fragColor = color;
-//fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+fragColor = linear_fog(color, vertexDistance, gl_Fog.start, gl_Fog.end, gl_Fog.color);
 }
